@@ -14,10 +14,13 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.1.4",
     "@reduxjs/toolkit": "^1.8.1",
+    "antd": "^5.6.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-redux": "^8.0.1"
+    "react-redux": "^8.0.1",
+    "styled-components": "^6.0.3"
   },
   "devDependencies": {
     "@testing-library/dom": "^9.2.0",
