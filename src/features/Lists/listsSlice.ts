@@ -1,21 +1,16 @@
-import { store } from "./../../app/store";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { addListId } from "../FakeTrello/trelloSlice";
 import { RootState } from "../../app/store";
+import { addTask } from "../Tasks/taskSlice";
 
 export interface ListState {
-    id: number;
+    id: string;
     title: string;
-    tasksId: number[];
+    tasksId: string[];
 }
 
-const initialState: ListState[] = [
-    {
-        id: 0,
-        title: "To Do",
-        tasksId: [],
-    },
-];
+const initialState: ListState[] = JSON.parse(
+    localStorage.getItem("trelloLists") || "[]"
+);
 
 export const ListsSlice = createSlice({
     name: "lists",
@@ -23,7 +18,7 @@ export const ListsSlice = createSlice({
     reducers: {
         addList: (
             state,
-            list: PayloadAction<{ id: number; title: string }>
+            list: PayloadAction<{ id: string; title: string }>
         ) => {
             state.push({
                 id: list.payload.id,
@@ -34,7 +29,7 @@ export const ListsSlice = createSlice({
 
         changeListTitle: (
             state,
-            changes: PayloadAction<{ listId: number; newTitle: string }>
+            changes: PayloadAction<{ listId: string; newTitle: string }>
         ) => {
             const trelloList = state.find(
                 (list) => list.id === changes.payload.listId
@@ -44,9 +39,20 @@ export const ListsSlice = createSlice({
             trelloList.title = changes.payload.newTitle;
         },
     },
+    extraReducers(builder) {
+        // Add new Task Id to a list
+        builder.addCase(addTask, (state, action) => {
+            const list = state.find(
+                (list) => list.id === action.payload.listId
+            );
+            if (!list) return;
+
+            list.tasksId.push(action.payload.id);
+        });
+    },
 });
 
-export const trelloList = (state: RootState, listId: number) =>
+export const trelloList = (state: RootState, listId: string) =>
     state.lists.find((list) => list.id === listId);
 
 export const { addList, changeListTitle } = ListsSlice.actions;
