@@ -1,25 +1,60 @@
 import React, { useEffect } from "react";
 
-interface DragAndDropProps {
-    ref: HTMLDivElement;
-}
+const TRELLO_TITLE_HEIGHT = 62.8;
 
-const draggable = ["trello-list"];
+let draggingElement: HTMLDivElement | null = null;
+let shiftX = null;
+let shiftY = null;
 
-function useDragAndDrop(ref: React.RefObject<HTMLDivElement>) {
+function useDragAndDrop() {
+    // Handle On Mouse Down
     useEffect(() => {
-        const target = ref.current;
-        if (!target) return;
-
-        // target.addEventListener("mousedown", (e) => {
-        //     const targetId = e.target?.id;
-        //     if (targetId && draggable.includes(targetId)) {
-        //         e.preventDefault();
-        //         console.log(targetId);
-        //     }
-        // });
+        window.addEventListener("mousedown", (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            const draggableElement = target.closest(".draggable");
+            if (!draggableElement) return;
+            draggingElement = draggableElement.closest(".drag-element");
+            if (draggingElement) {
+                shiftX =
+                    e.clientX - draggingElement.getBoundingClientRect().left;
+                shiftY =
+                    e.clientY - draggingElement.getBoundingClientRect().top;
+                console.log(">>>> dragging: ", draggingElement);
+            }
+        });
         return () => {
-            ref.current?.removeEventListener("mousedown", () => {});
+            window.removeEventListener("mousedown", () => {});
+        };
+    }, []);
+
+    // Handle On Mouse Move
+    useEffect(() => {
+        const moveAt = (pageX: number, pageY: number) => {
+            draggingElement!.style.left = pageX + "px";
+            draggingElement!.style.top = pageY - TRELLO_TITLE_HEIGHT + "px";
+        };
+
+        window.addEventListener("mousemove", (e: MouseEvent) => {
+            if (!draggingElement) return;
+            // const copyDraggingElement = draggingElement.cloneNode()
+            draggingElement.style.position = "absolute";
+            draggingElement.style.zIndex = "1000";
+            moveAt(e.pageX, e.pageY);
+            console.log("PageY: ", e.pageY);
+        });
+        return () => {
+            window.removeEventListener("mousemove", () => {});
+        };
+    }, []);
+
+    // Handle On Mouse Up
+    useEffect(() => {
+        window.addEventListener("mouseup", (e: MouseEvent) => {
+            if (!draggingElement) return;
+            draggingElement = null;
+        });
+        return () => {
+            window.removeEventListener("mouseup", () => {});
         };
     }, []);
 }

@@ -1,4 +1,3 @@
-import React, { useEffect, useRef } from "react";
 import { styled } from "styled-components";
 import { useAppSelector } from "../../app/hooks";
 import { trelloListsId } from "../../features/FakeTrello/trelloSlice";
@@ -9,8 +8,7 @@ import useDragAndDrop from "../../hooks/useDragAndDrop";
 
 function FakeTrello() {
     const listsId = useAppSelector(trelloListsId);
-    const boardRef = useRef<HTMLDivElement>(null);
-    useDragAndDrop(boardRef);
+    useDragAndDrop();
 
     return (
         <StyledFakeTrello>
@@ -18,8 +16,8 @@ function FakeTrello() {
                 <span>Fake Trello</span>
                 <SaveTrelloButton />
             </div>
-            <div ref={boardRef} id="board">
-                <div id="lists-container">
+            <div id="board">
+                <div id="lists-container" className="droppable">
                     {listsId.map((id) => {
                         return <TrelloList key={id} listId={id} />;
                     })}
@@ -102,7 +100,6 @@ export const StyledCard = styled.div`
     background-color: #101204;
     color: rgb(182, 194, 207);
     min-height: 20px;
-    padding: 14px 8px;
     border-radius: 12px;
     width: 272px;
 `;

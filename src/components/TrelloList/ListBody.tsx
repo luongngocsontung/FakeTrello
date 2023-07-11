@@ -12,7 +12,7 @@ function ListBody({ listId }: TrelloListProps) {
     if (!list) return false;
 
     return (
-        <StyledListBody>
+        <StyledListBody className="droppable">
             {list.tasksId.map((id) => {
                 return <TrelloTask key={id} taskId={id} />;
             })}
@@ -27,7 +27,7 @@ const StyledListBody = styled.div`
     justify-content: space-between;
     overflow-x: hidden;
     overflow-y: auto;
-    margin-top: 8px;
+    padding: 0 8px;
 `;
 
 export default ListBody;

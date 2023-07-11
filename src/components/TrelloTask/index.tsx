@@ -16,7 +16,7 @@ function TrelloTask({ taskId }: TrelloTaskProps) {
     if (!task) return false;
 
     return (
-        <StyledTrelloTask>
+        <StyledTrelloTask className="draggable drag-element">
             {task.title}
             <Button id="edit-task" icon={<EditOutlined />} />
         </StyledTrelloTask>

@@ -74,7 +74,7 @@ interface CustomComponentProps {
 }
 
 const StyledListFooter = styled.div<CustomComponentProps>`
-    margin-top: 8px;
+    padding: 8px;
 
     #add-task-buttons {
         display: ${(props) =>

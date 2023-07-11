@@ -27,7 +27,7 @@ function ListHeader({ listId }: TrelloListProps) {
     };
 
     return (
-        <StyledListHeader>
+        <StyledListHeader className="draggable">
             <input
                 id="list-title"
                 value={title}
@@ -43,6 +43,7 @@ const StyledListHeader = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 8px;
 
     #list-title {
         width: 100%;
