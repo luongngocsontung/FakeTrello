@@ -11,7 +11,8 @@
     "test": "vitest",
     "format": "prettier --write .",
     "lint": "eslint .",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "deploy": "git subtree push --prefix build origin gh-pages"
   },
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
