@@ -63,6 +63,8 @@ const StyledFakeTrello = styled.div`
             left: 0;
             bottom: 0;
             right: 0;
+            gap: 12px;
+            padding: 12px 12px 12px 12px;
             display: flex;
             margin-bottom: 8px;
             overflow-x: auto;
@@ -100,6 +102,7 @@ export const StyledCard = styled.div`
     min-height: 20px;
     border-radius: 12px;
     width: 272px;
+    box-sizing: border-box;
 `;
 
 export default FakeTrello;

@@ -76,8 +76,6 @@ interface CustomComponentProps {
 }
 
 const StyledAddListButton = styled.div<CustomComponentProps>`
-    padding: 12px 0 0 12px;
-
     #add-list-buttons {
         display: ${(props) =>
             props["is-adding-list"] === "true" ? "none" : "block"};

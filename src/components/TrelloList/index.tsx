@@ -24,8 +24,6 @@ function TrelloList({ listId }: TrelloListProps) {
 }
 
 const StyledTrelloList = styled.div`
-    padding: 12px 0 0 12px;
-
     &.dragging #trello-list {
         background-color: #00000023;
     }
@@ -35,7 +33,6 @@ const StyledTrelloList = styled.div`
     }
 
     #trello-list {
-        box-sizing: border-box;
         display: flex;
         flex-direction: column;
         max-height: 100%;

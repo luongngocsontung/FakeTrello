@@ -17,6 +17,8 @@ function useDragAndDrop() {
     };
 
     const handleOnMouseDown = (e: MouseEvent) => {
+        // Only check for left click
+        if (e.button !== 0) return;
         const target = e.target as HTMLElement;
         // .draggable are elements used for triggering DND
         const draggableElement = target.closest(".draggable");
@@ -80,7 +82,6 @@ function useDragAndDrop() {
             // Handle for DND task to another List
             if (!swapElement) {
                 if (draggingElement.id === "task-dnd") {
-                    console.log("outside");
                     cloneDraggingElement.hidden = true;
                     const elementBelow = document.elementFromPoint(
                         e.clientX,
@@ -100,40 +101,74 @@ function useDragAndDrop() {
             }
 
             const droppableElement = swapElement.closest(".droppable");
+
+            const manipulateDom = (type: "vertical" | "horizontal") => {
+                if (!droppableElement || !draggingElement) return;
+
+                const targetClient =
+                    type === "horizontal" ? e.clientX : e.clientY;
+                // Get middle position of swapElement
+                let middleSwapElement;
+                if (type === "horizontal") {
+                    middleSwapElement =
+                        swapElement.getBoundingClientRect().left +
+                        swapElement.offsetWidth / 2;
+                } else {
+                    middleSwapElement =
+                        swapElement.getBoundingClientRect().top +
+                        swapElement.offsetHeight / 2;
+                }
+
+                if (targetClient <= middleSwapElement) {
+                    if (swapElement.nextElementSibling) {
+                        // If draggingEl is the previous sibling swapEl then insert draggingEl after swapEl
+                        // if (
+                        //     swapElement.previousElementSibling ===
+                        //     draggingElement
+                        // ) {
+                        droppableElement.insertBefore(
+                            draggingElement,
+                            swapElement.nextElementSibling
+                        );
+                        // }
+                        // // Else insert draggingEl before swapEl
+                        // else {
+                        //     droppableElement.insertBefore(
+                        //         draggingElement,
+                        //         swapElement
+                        //     );
+                        // }
+                    } else {
+                        droppableElement.append(draggingElement);
+                    }
+                } else {
+                    // If draggingEl is the next sibling swapEl then insert draggingEl before swapEl
+                    if (swapElement.nextElementSibling === draggingElement) {
+                        droppableElement.insertBefore(
+                            draggingElement,
+                            swapElement
+                        );
+                    }
+                    // Else insert draggingEl after swapEl
+                    else {
+                        if (swapElement.nextElementSibling) {
+                            droppableElement.insertBefore(
+                                draggingElement,
+                                swapElement.nextElementSibling
+                            );
+                        } else {
+                            droppableElement.append(draggingElement);
+                        }
+                    }
+                }
+            };
+
             // Swap for Lists
-            if (droppableElement?.classList.contains("horizontal-drop")) {
-                const middleXSwapElement =
-                    swapElement.getBoundingClientRect().left +
-                    swapElement.offsetWidth / 2;
-                if (e.clientX <= middleXSwapElement) {
-                    droppableElement?.insertBefore(
-                        swapElement,
-                        draggingElement
-                    );
-                } else {
-                    droppableElement?.insertBefore(
-                        draggingElement,
-                        swapElement
-                    );
-                }
-            }
+            if (droppableElement?.classList.contains("horizontal-drop"))
+                manipulateDom("horizontal");
             // Swap for Tasks
-            else if (droppableElement?.classList.contains("vertical-drop")) {
-                const middleYSwapElement =
-                    swapElement.getBoundingClientRect().top +
-                    swapElement.offsetHeight / 2;
-                if (e.clientY <= middleYSwapElement) {
-                    droppableElement?.insertBefore(
-                        swapElement,
-                        draggingElement
-                    );
-                } else {
-                    droppableElement?.insertBefore(
-                        draggingElement,
-                        swapElement
-                    );
-                }
-            }
+            else if (droppableElement?.classList.contains("vertical-drop"))
+                manipulateDom("vertical");
         }
     };
 
@@ -144,13 +179,13 @@ function useDragAndDrop() {
             clickedElement.focus();
         }
         // Clean up
+        document.removeEventListener("mousemove", handleOnMouseMove);
         draggingElement.classList.replace("dragging", "drag-element");
         draggingElement = null;
         cloneDraggingElement?.remove();
         cloneDraggingElement = null;
         clickedElement = null;
         isMoving = false;
-        document.removeEventListener("mousemove", handleOnMouseMove);
     };
 
     // Handle On Mouse Down
