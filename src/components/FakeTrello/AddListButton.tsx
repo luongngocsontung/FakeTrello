@@ -76,6 +76,8 @@ interface CustomComponentProps {
 }
 
 const StyledAddListButton = styled.div<CustomComponentProps>`
+    padding: 12px 0 0 12px;
+
     #add-list-buttons {
         display: ${(props) =>
             props["is-adding-list"] === "true" ? "none" : "block"};
@@ -90,6 +92,7 @@ const StyledAddListButton = styled.div<CustomComponentProps>`
 
     #add-list-container {
         opacity: ${(props) => (props["is-adding-list"] === "true" ? "1" : "0")};
+        padding: 8px;
 
         #add-list-buttons:hover {
             background-color: #a6c5e229;

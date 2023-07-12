@@ -28,7 +28,7 @@ function ListHeader({ listId }: TrelloListProps) {
     };
 
     return (
-        <StyledListHeader className="draggable">
+        <StyledListHeader id="task-dnd" className="draggable">
             <input
                 id="list-title"
                 value={title}

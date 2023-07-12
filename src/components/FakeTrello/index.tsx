@@ -17,7 +17,7 @@ function FakeTrello() {
                 <SaveTrelloButton />
             </div>
             <div id="board">
-                <div id="lists-container" className="droppable">
+                <div id="lists-container" className="droppable horizontal-drop">
                     {listsId.map((id) => {
                         return <TrelloList key={id} listId={id} />;
                     })}
@@ -64,9 +64,7 @@ const StyledFakeTrello = styled.div`
             bottom: 0;
             right: 0;
             display: flex;
-            gap: 12px;
             margin-bottom: 8px;
-            padding: 12px 12px 0 12px;
             overflow-x: auto;
             overflow-y: hidden;
             white-space: nowrap;

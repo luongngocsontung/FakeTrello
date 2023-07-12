@@ -56,15 +56,84 @@ function useDragAndDrop() {
                 // set up styling for moving
                 cloneDraggingElement.style.position = "absolute";
                 cloneDraggingElement.style.zIndex = "1000";
+                cloneDraggingElement.style.width =
+                    draggingElement.offsetWidth + "px";
+                cloneDraggingElement.style.height =
+                    draggingElement.offsetHeight + "px";
 
                 // append to body
                 document.body.append(cloneDraggingElement);
                 moveAt(e.pageX, e.pageY);
                 // add class to dragging element to make it look as a placeholder
-                draggingElement.classList.add("dragging");
+                draggingElement.classList.replace("drag-element", "dragging");
             }
         } else {
+            if (!cloneDraggingElement) return;
             moveAt(e.pageX, e.pageY);
+
+            // Get valid Elment for swapping elements's place
+            cloneDraggingElement.hidden = true;
+            const swapElement: HTMLDivElement | null | undefined = document
+                .elementFromPoint(e.clientX, e.clientY)
+                ?.closest(`.drag-element#${draggingElement.id}`);
+            cloneDraggingElement.hidden = false;
+            // Handle for DND task to another List
+            if (!swapElement) {
+                if (draggingElement.id === "task-dnd") {
+                    console.log("outside");
+                    cloneDraggingElement.hidden = true;
+                    const elementBelow = document.elementFromPoint(
+                        e.clientX,
+                        e.clientY
+                    );
+                    cloneDraggingElement.hidden = false;
+                    // If still inside droppable task then do not thing
+                    if (elementBelow?.closest(".droppable.vertical-drop"))
+                        return;
+                    // Get task droppable container and append dragging task to the end
+                    const droppableElement = elementBelow
+                        ?.closest("#list-dnd")
+                        ?.getElementsByClassName("droppable vertical-drop")[0];
+                    droppableElement?.appendChild(draggingElement);
+                }
+                return;
+            }
+
+            const droppableElement = swapElement.closest(".droppable");
+            // Swap for Lists
+            if (droppableElement?.classList.contains("horizontal-drop")) {
+                const middleXSwapElement =
+                    swapElement.getBoundingClientRect().left +
+                    swapElement.offsetWidth / 2;
+                if (e.clientX <= middleXSwapElement) {
+                    droppableElement?.insertBefore(
+                        swapElement,
+                        draggingElement
+                    );
+                } else {
+                    droppableElement?.insertBefore(
+                        draggingElement,
+                        swapElement
+                    );
+                }
+            }
+            // Swap for Tasks
+            else if (droppableElement?.classList.contains("vertical-drop")) {
+                const middleYSwapElement =
+                    swapElement.getBoundingClientRect().top +
+                    swapElement.offsetHeight / 2;
+                if (e.clientY <= middleYSwapElement) {
+                    droppableElement?.insertBefore(
+                        swapElement,
+                        draggingElement
+                    );
+                } else {
+                    droppableElement?.insertBefore(
+                        draggingElement,
+                        swapElement
+                    );
+                }
+            }
         }
     };
 
@@ -75,8 +144,13 @@ function useDragAndDrop() {
             clickedElement.focus();
         }
         // Clean up
+        draggingElement.classList.replace("dragging", "drag-element");
         draggingElement = null;
+        cloneDraggingElement?.remove();
+        cloneDraggingElement = null;
+        clickedElement = null;
         isMoving = false;
+        document.removeEventListener("mousemove", handleOnMouseMove);
     };
 
     // Handle On Mouse Down

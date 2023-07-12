@@ -16,40 +16,59 @@ function TrelloTask({ taskId }: TrelloTaskProps) {
     if (!task) return false;
 
     return (
-        <StyledTrelloTask className="draggable drag-element">
-            {task.title}
-            <Button id="edit-task" icon={<EditOutlined />} />
+        <StyledTrelloTask id="task-dnd" className="draggable drag-element">
+            <div id="trello-task">
+                <div id="task-container">
+                    {task.title}
+                    <Button id="edit-task" icon={<EditOutlined />} />
+                </div>
+            </div>
         </StyledTrelloTask>
     );
 }
 
 const StyledTrelloTask = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 2px 2px 2px 12px;
-    border-radius: 8px;
-    background-color: #22272b;
-    font-weight: 400;
-    color: white;
-    cursor: pointer;
+    padding: 7px 8px 0 8px;
 
-    &:hover {
-        background-color: #282e33;
-        #edit-task {
-            visibility: visible;
+    &.dragging #trello-task {
+        background-color: #a1bdd914;
+    }
+
+    &.dragging #task-container {
+        visibility: hidden;
+    }
+
+    #trello-task {
+        border-radius: 8px;
+        background-color: #22272b;
+        font-weight: 400;
+        color: white;
+        cursor: pointer;
+
+        #task-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2px 2px 2px 12px;
+
+            #edit-task {
+                visibility: hidden;
+                background-color: transparent;
+                border: none;
+                color: inherit;
+            }
+
+            #edit-task :hover {
+                color: #4096ff;
+            }
         }
     }
 
-    #edit-task {
-        visibility: hidden;
-        background-color: transparent;
-        border: none;
-        color: inherit;
-    }
-
-    #edit-task :hover {
-        color: #4096ff;
+    #trello-task:hover {
+        background-color: #282e33;
+        #task-container #edit-task {
+            visibility: visible;
+        }
     }
 `;
 
