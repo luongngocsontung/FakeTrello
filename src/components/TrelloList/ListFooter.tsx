@@ -5,6 +5,7 @@ import { styled } from "styled-components";
 import { TrelloListProps } from ".";
 import { useAppDispatch } from "../../app/hooks";
 import { addTask } from "../../features/Tasks/taskSlice";
+import { getNewId } from "../../utils/newId";
 
 function ListFooter({ listId }: TrelloListProps) {
     const [isAddingTask, setIsAddingTask] = useState(false);
@@ -18,7 +19,7 @@ function ListFooter({ listId }: TrelloListProps) {
 
         const newTask = {
             listId: listId,
-            id: new Date().toString().replaceAll(" ", ""),
+            id: getNewId(),
             title: title,
         };
         dispatch(addTask(newTask));

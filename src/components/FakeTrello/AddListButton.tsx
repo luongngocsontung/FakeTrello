@@ -5,6 +5,7 @@ import { addList } from "../../features/Lists/listsSlice";
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import { styled } from "styled-components";
 import { StyledCard } from ".";
+import { getNewId } from "../../utils/newId";
 
 function AddListButton() {
     const [isAddingList, setIsAddingList] = useState(false);
@@ -17,7 +18,7 @@ function AddListButton() {
         if (!title) return;
 
         const newList = {
-            id: new Date().toString().replaceAll(" ", ""),
+            id: getNewId(),
             title: title,
         };
         dispatch(addList(newList));

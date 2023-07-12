@@ -13,21 +13,35 @@ function TrelloList({ listId }: TrelloListProps) {
     return (
         <StyledTrelloList className="drag-element">
             <StyledCard id="trello-list">
-                <ListHeader listId={listId} />
-                <ListBody listId={listId} />
-                <ListFooter listId={listId} />
+                <div id="trello-list-container">
+                    <ListHeader listId={listId} />
+                    <ListBody listId={listId} />
+                    <ListFooter listId={listId} />
+                </div>
             </StyledCard>
         </StyledTrelloList>
     );
 }
 
 const StyledTrelloList = styled.div`
+    &.dragging #trello-list {
+        background-color: #00000023;
+    }
+
+    &.dragging #trello-list-container {
+        visibility: hidden;
+    }
+
     #trello-list {
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
-        box-sizing: border-box;
         max-height: 100%;
+    }
+    #trello-list-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 20px;
     }
 `;
 

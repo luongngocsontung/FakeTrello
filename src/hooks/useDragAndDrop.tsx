@@ -1,60 +1,91 @@
 import React, { useEffect } from "react";
 
-const TRELLO_TITLE_HEIGHT = 62.8;
-
 let draggingElement: HTMLDivElement | null = null;
-let shiftX = null;
-let shiftY = null;
+let cloneDraggingElement: HTMLDivElement | null = null;
+let clickedElement: HTMLElement | null = null;
+let shiftX = 0;
+let shiftY = 0;
+let mouseDownClientX = 0;
+let mouseDownClientY = 0;
+let isMoving = false;
 
 function useDragAndDrop() {
+    // Move Element with mouse's position
+    const moveAt = (pageX: number, pageY: number) => {
+        cloneDraggingElement!.style.left = pageX - shiftX + "px";
+        cloneDraggingElement!.style.top = pageY - shiftY + "px";
+    };
+
+    const handleOnMouseDown = (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+        // .draggable are elements used for triggering DND
+        const draggableElement = target.closest(".draggable");
+        // If target is being focused then will not execute DND
+        if (!draggableElement || target.getAttribute("isFocus") === "true")
+            return;
+
+        e.preventDefault();
+        // Store CLicked Element for handle on mouse up because of preventDefault
+        clickedElement = target;
+        // .drag-element are elements will be moved when DND
+        draggingElement = draggableElement.closest(".drag-element");
+        if (!draggingElement) return;
+
+        // this is for perfect draggingELement's position
+        shiftX = e.clientX - draggingElement.getBoundingClientRect().left;
+        shiftY = e.clientY - draggingElement.getBoundingClientRect().top;
+        mouseDownClientX = e.clientX;
+        mouseDownClientY = e.clientY;
+
+        document.addEventListener("mousemove", handleOnMouseMove);
+    };
+
+    const handleOnMouseMove = (e: MouseEvent) => {
+        if (!draggingElement) return;
+        if (!isMoving) {
+            // Start moving when mouse's position move away from mouseDown's position greater than 5
+            const isAbleMoving =
+                Math.abs(e.clientX - mouseDownClientX) > 5 ||
+                Math.abs(e.clientY - mouseDownClientY) > 5;
+            if (isAbleMoving) {
+                isMoving = true;
+                const tempDiv = document.createElement("div");
+                tempDiv.append(draggingElement.cloneNode(true));
+                cloneDraggingElement = tempDiv;
+
+                // set up styling for moving
+                cloneDraggingElement.style.position = "absolute";
+                cloneDraggingElement.style.zIndex = "1000";
+
+                // append to body
+                document.body.append(cloneDraggingElement);
+                moveAt(e.pageX, e.pageY);
+                // add class to dragging element to make it look as a placeholder
+                draggingElement.classList.add("dragging");
+            }
+        } else {
+            moveAt(e.pageX, e.pageY);
+        }
+    };
+
+    const handleOnMouseUp = (e: MouseEvent) => {
+        if (!draggingElement) return;
+        // Handle focus input for List Title
+        if (!isMoving && clickedElement) {
+            clickedElement.focus();
+        }
+        // Clean up
+        draggingElement = null;
+        isMoving = false;
+    };
+
     // Handle On Mouse Down
     useEffect(() => {
-        window.addEventListener("mousedown", (e: MouseEvent) => {
-            const target = e.target as HTMLElement;
-            const draggableElement = target.closest(".draggable");
-            if (!draggableElement) return;
-            draggingElement = draggableElement.closest(".drag-element");
-            if (draggingElement) {
-                shiftX =
-                    e.clientX - draggingElement.getBoundingClientRect().left;
-                shiftY =
-                    e.clientY - draggingElement.getBoundingClientRect().top;
-                console.log(">>>> dragging: ", draggingElement);
-            }
-        });
+        document.addEventListener("mousedown", handleOnMouseDown);
+        document.addEventListener("mouseup", handleOnMouseUp);
         return () => {
-            window.removeEventListener("mousedown", () => {});
-        };
-    }, []);
-
-    // Handle On Mouse Move
-    useEffect(() => {
-        const moveAt = (pageX: number, pageY: number) => {
-            draggingElement!.style.left = pageX + "px";
-            draggingElement!.style.top = pageY - TRELLO_TITLE_HEIGHT + "px";
-        };
-
-        window.addEventListener("mousemove", (e: MouseEvent) => {
-            if (!draggingElement) return;
-            // const copyDraggingElement = draggingElement.cloneNode()
-            draggingElement.style.position = "absolute";
-            draggingElement.style.zIndex = "1000";
-            moveAt(e.pageX, e.pageY);
-            console.log("PageY: ", e.pageY);
-        });
-        return () => {
-            window.removeEventListener("mousemove", () => {});
-        };
-    }, []);
-
-    // Handle On Mouse Up
-    useEffect(() => {
-        window.addEventListener("mouseup", (e: MouseEvent) => {
-            if (!draggingElement) return;
-            draggingElement = null;
-        });
-        return () => {
-            window.removeEventListener("mouseup", () => {});
+            document.removeEventListener("mousedown", handleOnMouseDown);
+            document.removeEventListener("mouseup", handleOnMouseUp);
         };
     }, []);
 }

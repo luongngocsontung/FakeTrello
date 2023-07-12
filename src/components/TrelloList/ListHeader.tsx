@@ -13,6 +13,7 @@ function ListHeader({ listId }: TrelloListProps) {
     const handleChangeListTitle = (
         e: React.FocusEvent<HTMLInputElement, Element>
     ) => {
+        e.currentTarget.setAttribute("isFocus", "false");
         const newTitle = e.target.value;
         if (!newTitle) {
             return setTitle(list?.title);
@@ -33,6 +34,7 @@ function ListHeader({ listId }: TrelloListProps) {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 onBlur={handleChangeListTitle}
+                onFocus={(e) => e.currentTarget.setAttribute("isFocus", "true")}
             />
             <EllipsisOutlined style={{ fontSize: 21 }} />
         </StyledListHeader>
