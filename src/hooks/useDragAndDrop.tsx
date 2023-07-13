@@ -91,11 +91,23 @@ function useDragAndDrop() {
                     // If still inside droppable task then do not thing
                     if (elementBelow?.closest(".droppable.vertical-drop"))
                         return;
-                    // Get task droppable container and append dragging task to the end
+                    // Get task droppable container and append/prepend task
                     const droppableElement = elementBelow
                         ?.closest("#list-dnd")
                         ?.getElementsByClassName("droppable vertical-drop")[0];
-                    droppableElement?.appendChild(draggingElement);
+                    if (!droppableElement) return;
+
+                    // Get middleY of droppableElement
+                    const boundingClientRectDroppable =
+                        droppableElement?.getBoundingClientRect();
+                    const middleY =
+                        boundingClientRectDroppable.top +
+                        boundingClientRectDroppable.height / 2;
+                    /* if mouse's position is on upper half of droppableEl then prepend
+                       else then append */
+                    if (e.clientY <= middleY)
+                        droppableElement.prepend(draggingElement);
+                    else droppableElement.append(draggingElement);
                 }
                 return;
             }
@@ -109,7 +121,10 @@ function useDragAndDrop() {
                     type === "horizontal"
                         ? e.clientX > mouseClientX
                         : e.clientY > mouseClientY;
-                const mousePrevious = !mouseNext;
+                const mousePrevious =
+                    type === "horizontal"
+                        ? e.clientX < mouseClientX
+                        : e.clientY < mouseClientY;
                 const swapNextSibling = swapElement.nextElementSibling;
                 // Reassign mouseClient for the next mouse move check
                 mouseClientX = e.clientX;
