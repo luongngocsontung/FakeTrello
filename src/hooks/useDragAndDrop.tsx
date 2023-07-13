@@ -5,8 +5,8 @@ let cloneDraggingElement: HTMLDivElement | null = null;
 let clickedElement: HTMLElement | null = null;
 let shiftX = 0;
 let shiftY = 0;
-let mouseDownClientX = 0;
-let mouseDownClientY = 0;
+let mouseClientX = 0;
+let mouseClientY = 0;
 let isMoving = false;
 
 function useDragAndDrop() {
@@ -36,8 +36,8 @@ function useDragAndDrop() {
         // this is for perfect draggingELement's position
         shiftX = e.clientX - draggingElement.getBoundingClientRect().left;
         shiftY = e.clientY - draggingElement.getBoundingClientRect().top;
-        mouseDownClientX = e.clientX;
-        mouseDownClientY = e.clientY;
+        mouseClientX = e.clientX;
+        mouseClientY = e.clientY;
 
         document.addEventListener("mousemove", handleOnMouseMove);
     };
@@ -47,8 +47,8 @@ function useDragAndDrop() {
         if (!isMoving) {
             // Start moving when mouse's position move away from mouseDown's position greater than 5
             const isAbleMoving =
-                Math.abs(e.clientX - mouseDownClientX) > 5 ||
-                Math.abs(e.clientY - mouseDownClientY) > 5;
+                Math.abs(e.clientX - mouseClientX) > 5 ||
+                Math.abs(e.clientY - mouseClientY) > 5;
             if (isAbleMoving) {
                 isMoving = true;
                 const tempDiv = document.createElement("div");
@@ -91,11 +91,23 @@ function useDragAndDrop() {
                     // If still inside droppable task then do not thing
                     if (elementBelow?.closest(".droppable.vertical-drop"))
                         return;
-                    // Get task droppable container and append dragging task to the end
+                    // Get task droppable container and append/prepend task
                     const droppableElement = elementBelow
                         ?.closest("#list-dnd")
                         ?.getElementsByClassName("droppable vertical-drop")[0];
-                    droppableElement?.appendChild(draggingElement);
+                    if (!droppableElement) return;
+
+                    // Get middleY of droppableElement
+                    const boundingClientRectDroppable =
+                        droppableElement?.getBoundingClientRect();
+                    const middleY =
+                        boundingClientRectDroppable.top +
+                        boundingClientRectDroppable.height / 2;
+                    /* if mouse's position is on upper half of droppableEl then prepend
+                       else then append */
+                    if (e.clientY <= middleY)
+                        droppableElement.prepend(draggingElement);
+                    else droppableElement.append(draggingElement);
                 }
                 return;
             }
@@ -104,62 +116,33 @@ function useDragAndDrop() {
 
             const manipulateDom = (type: "vertical" | "horizontal") => {
                 if (!droppableElement || !draggingElement) return;
-
-                const targetClient =
-                    type === "horizontal" ? e.clientX : e.clientY;
-                // Get middle position of swapElement
-                let middleSwapElement;
-                if (type === "horizontal") {
-                    middleSwapElement =
-                        swapElement.getBoundingClientRect().left +
-                        swapElement.offsetWidth / 2;
-                } else {
-                    middleSwapElement =
-                        swapElement.getBoundingClientRect().top +
-                        swapElement.offsetHeight / 2;
-                }
-
-                if (targetClient <= middleSwapElement) {
-                    if (swapElement.nextElementSibling) {
-                        // If draggingEl is the previous sibling swapEl then insert draggingEl after swapEl
-                        // if (
-                        //     swapElement.previousElementSibling ===
-                        //     draggingElement
-                        // ) {
+                // Check if user is moving mouse down/right or up/left
+                const mouseNext =
+                    type === "horizontal"
+                        ? e.clientX > mouseClientX
+                        : e.clientY > mouseClientY;
+                const mousePrevious =
+                    type === "horizontal"
+                        ? e.clientX < mouseClientX
+                        : e.clientY < mouseClientY;
+                const swapNextSibling = swapElement.nextElementSibling;
+                // Reassign mouseClient for the next mouse move check
+                mouseClientX = e.clientX;
+                mouseClientY = e.clientY;
+                // If user is moving mouse to right (list) or down (task)
+                if (mouseNext) {
+                    if (swapNextSibling) {
                         droppableElement.insertBefore(
                             draggingElement,
-                            swapElement.nextElementSibling
+                            swapNextSibling
                         );
-                        // }
-                        // // Else insert draggingEl before swapEl
-                        // else {
-                        //     droppableElement.insertBefore(
-                        //         draggingElement,
-                        //         swapElement
-                        //     );
-                        // }
                     } else {
                         droppableElement.append(draggingElement);
                     }
-                } else {
-                    // If draggingEl is the next sibling swapEl then insert draggingEl before swapEl
-                    if (swapElement.nextElementSibling === draggingElement) {
-                        droppableElement.insertBefore(
-                            draggingElement,
-                            swapElement
-                        );
-                    }
-                    // Else insert draggingEl after swapEl
-                    else {
-                        if (swapElement.nextElementSibling) {
-                            droppableElement.insertBefore(
-                                draggingElement,
-                                swapElement.nextElementSibling
-                            );
-                        } else {
-                            droppableElement.append(draggingElement);
-                        }
-                    }
+                }
+                // If user is moving mouse to left (list) or up (task)
+                else if (mousePrevious) {
+                    droppableElement.insertBefore(draggingElement, swapElement);
                 }
             };
 
@@ -186,6 +169,8 @@ function useDragAndDrop() {
         cloneDraggingElement = null;
         clickedElement = null;
         isMoving = false;
+        mouseClientX = 0;
+        mouseClientY = 0;
     };
 
     // Handle On Mouse Down
