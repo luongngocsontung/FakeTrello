@@ -1,6 +1,6 @@
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { trelloTask } from "../../features/Tasks/taskSlice";
+import { trelloTaskTitle } from "../../features/Tasks/taskSlice";
 import { styled } from "styled-components";
 import { Button } from "antd";
 import { EditOutlined } from "@ant-design/icons";
@@ -10,16 +10,20 @@ export interface TrelloTaskProps {
 }
 
 function TrelloTask({ taskId }: TrelloTaskProps) {
-    const task = useAppSelector((state) => trelloTask(state, taskId));
+    const taskTitle = useAppSelector((state) => trelloTaskTitle(state, taskId));
     const dispatch = useAppDispatch();
 
-    if (!task) return false;
+    if (!taskTitle) return false;
 
     return (
-        <StyledTrelloTask id="task-dnd" className="draggable drag-element">
+        <StyledTrelloTask
+            id="task-dnd"
+            className="draggable drag-element"
+            trello-id={taskId}
+        >
             <div id="trello-task">
                 <div id="task-container">
-                    {task.title}
+                    {taskTitle}
                     <Button id="edit-task" icon={<EditOutlined />} />
                 </div>
             </div>
@@ -28,7 +32,7 @@ function TrelloTask({ taskId }: TrelloTaskProps) {
 }
 
 const StyledTrelloTask = styled.div`
-    padding: 7px 8px 0 8px;
+    padding: 0 8px 0 8px;
 
     &.dragging #trello-task {
         background-color: #a1bdd914;

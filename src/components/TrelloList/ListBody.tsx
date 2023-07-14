@@ -2,18 +2,20 @@ import React from "react";
 import { TrelloListProps } from ".";
 import { styled } from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { trelloList } from "../../features/Lists/listsSlice";
+import { trelloListTasksId } from "../../features/Lists/listsSlice";
 import TrelloTask from "../TrelloTask";
 
 function ListBody({ listId }: TrelloListProps) {
-    const list = useAppSelector((state) => trelloList(state, listId));
+    const listTasksId = useAppSelector((state) =>
+        trelloListTasksId(state, listId)
+    );
     const dispatch = useAppDispatch();
 
-    if (!list) return false;
+    if (!listTasksId) return false;
 
     return (
-        <StyledListBody className="droppable vertical-drop">
-            {list.tasksId.map((id) => {
+        <StyledListBody id="list-body" className="droppable">
+            {listTasksId.map((id) => {
                 return <TrelloTask key={id} taskId={id} />;
             })}
         </StyledListBody>
@@ -26,6 +28,7 @@ const StyledListBody = styled.div`
     justify-content: space-between;
     overflow-x: hidden;
     overflow-y: auto;
+    gap: 7px;
 `;
 
 export default ListBody;

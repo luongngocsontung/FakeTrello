@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
+import { useAppDispatch } from "../app/hooks";
+import { reOrderList } from "../features/FakeTrello/trelloSlice";
 
 let draggingElement: HTMLDivElement | null = null;
+let draggingElType: string = "";
 let cloneDraggingElement: HTMLDivElement | null = null;
 let clickedElement: HTMLElement | null = null;
 let shiftX = 0;
@@ -8,8 +11,13 @@ let shiftY = 0;
 let mouseClientX = 0;
 let mouseClientY = 0;
 let isMoving = false;
+let draggingId: string | null = null;
+let dropPoistion: string | null = null;
+let swapElementId: string | null = null;
 
 function useDragAndDrop() {
+    const dispatch = useAppDispatch();
+
     // Move Element with mouse's position
     const moveAt = (pageX: number, pageY: number) => {
         cloneDraggingElement!.style.left = pageX - shiftX + "px";
@@ -36,6 +44,8 @@ function useDragAndDrop() {
         // this is for perfect draggingELement's position
         shiftX = e.clientX - draggingElement.getBoundingClientRect().left;
         shiftY = e.clientY - draggingElement.getBoundingClientRect().top;
+
+        // For checking mouse move (up/down/left/right)
         mouseClientX = e.clientX;
         mouseClientY = e.clientY;
 
@@ -62,12 +72,17 @@ function useDragAndDrop() {
                     draggingElement.offsetWidth + "px";
                 cloneDraggingElement.style.height =
                     draggingElement.offsetHeight + "px";
+                cloneDraggingElement.style.rotate = "4deg";
 
                 // append to body
                 document.body.append(cloneDraggingElement);
                 moveAt(e.pageX, e.pageY);
                 // add class to dragging element to make it look as a placeholder
                 draggingElement.classList.replace("drag-element", "dragging");
+                // get dragging trello-id
+                draggingId = draggingElement.getAttribute("trello-id");
+                // get dragging element type
+                draggingElType = draggingElement.id;
             }
         } else {
             if (!cloneDraggingElement) return;
@@ -89,12 +104,11 @@ function useDragAndDrop() {
                     );
                     cloneDraggingElement.hidden = false;
                     // If still inside droppable task then do not thing
-                    if (elementBelow?.closest(".droppable.vertical-drop"))
-                        return;
+                    if (elementBelow?.closest(".droppable#list-body")) return;
                     // Get task droppable container and append/prepend task
                     const droppableElement = elementBelow
                         ?.closest("#list-dnd")
-                        ?.getElementsByClassName("droppable vertical-drop")[0];
+                        ?.getElementsByClassName("droppable")[0];
                     if (!droppableElement) return;
 
                     // Get middleY of droppableElement
@@ -104,7 +118,7 @@ function useDragAndDrop() {
                         boundingClientRectDroppable.top +
                         boundingClientRectDroppable.height / 2;
                     /* if mouse's position is on upper half of droppableEl then prepend
-                       else then append */
+                        else then append */
                     if (e.clientY <= middleY)
                         droppableElement.prepend(draggingElement);
                     else droppableElement.append(draggingElement);
@@ -112,17 +126,19 @@ function useDragAndDrop() {
                 return;
             }
 
+            swapElementId = swapElement.getAttribute("trello-id");
+
             const droppableElement = swapElement.closest(".droppable");
 
-            const manipulateDom = (type: "vertical" | "horizontal") => {
+            const manipulateDom = (type: "list" | "task") => {
                 if (!droppableElement || !draggingElement) return;
                 // Check if user is moving mouse down/right or up/left
                 const mouseNext =
-                    type === "horizontal"
+                    type === "list"
                         ? e.clientX > mouseClientX
                         : e.clientY > mouseClientY;
                 const mousePrevious =
-                    type === "horizontal"
+                    type === "list"
                         ? e.clientX < mouseClientX
                         : e.clientY < mouseClientY;
                 const swapNextSibling = swapElement.nextElementSibling;
@@ -136,22 +152,23 @@ function useDragAndDrop() {
                             draggingElement,
                             swapNextSibling
                         );
+                        dropPoistion = "after";
                     } else {
                         droppableElement.append(draggingElement);
+                        dropPoistion = "after";
                     }
                 }
                 // If user is moving mouse to left (list) or up (task)
                 else if (mousePrevious) {
                     droppableElement.insertBefore(draggingElement, swapElement);
+                    dropPoistion = "before";
                 }
             };
 
             // Swap for Lists
-            if (droppableElement?.classList.contains("horizontal-drop"))
-                manipulateDom("horizontal");
+            if (draggingElType === "list-dnd") manipulateDom("list");
             // Swap for Tasks
-            else if (droppableElement?.classList.contains("vertical-drop"))
-                manipulateDom("vertical");
+            else if (draggingElType === "task-dnd") manipulateDom("task");
         }
     };
 
@@ -161,6 +178,18 @@ function useDragAndDrop() {
         if (!isMoving && clickedElement) {
             clickedElement.focus();
         }
+        // update state if reorder
+        if (draggingId && swapElementId && dropPoistion) {
+            if (draggingElType === "list-dnd")
+                dispatch(
+                    reOrderList({
+                        draggingId: draggingId,
+                        insertId: swapElementId,
+                        dropPosition: dropPoistion,
+                    })
+                );
+        }
+
         // Clean up
         document.removeEventListener("mousemove", handleOnMouseMove);
         draggingElement.classList.replace("dragging", "drag-element");
@@ -171,6 +200,10 @@ function useDragAndDrop() {
         isMoving = false;
         mouseClientX = 0;
         mouseClientY = 0;
+        draggingId = null;
+        dropPoistion = null;
+        swapElementId = null;
+        draggingElType = "";
     };
 
     // Handle On Mouse Down

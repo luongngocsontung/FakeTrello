@@ -36,8 +36,8 @@ export const TasksSlice = createSlice({
     },
 });
 
-export const trelloTask = (state: RootState, taskId: string) =>
-    state.tasks.find((task) => task.id === taskId);
+export const trelloTaskTitle = (state: RootState, taskId: string) =>
+    state.tasks.find((task) => task.id === taskId)?.title;
 
 export const { addTask, changeTaskTitle } = TasksSlice.actions;
 

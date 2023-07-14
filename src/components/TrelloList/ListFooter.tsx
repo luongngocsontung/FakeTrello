@@ -5,7 +5,7 @@ import { styled } from "styled-components";
 import { TrelloListProps } from ".";
 import { useAppDispatch } from "../../app/hooks";
 import { addTask } from "../../features/Tasks/taskSlice";
-import { getNewId } from "../../utils/newId";
+import { getNewId } from "../../utils/functions";
 
 function ListFooter({ listId }: TrelloListProps) {
     const [isAddingTask, setIsAddingTask] = useState(false);
@@ -42,7 +42,7 @@ function ListFooter({ listId }: TrelloListProps) {
                     ref={titleRef}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Enter list title..."
+                    placeholder="Enter task title..."
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
                             handleAddNewTask();
@@ -55,7 +55,7 @@ function ListFooter({ listId }: TrelloListProps) {
                         type="primary"
                         onClick={handleAddNewTask}
                     >
-                        Add list
+                        Add task
                     </Button>
                     <CloseOutlined
                         style={{ fontSize: 21 }}
@@ -94,8 +94,10 @@ const StyledListFooter = styled.div<CustomComponentProps>`
     }
 
     #add-task-container {
-        display: ${(props) =>
-            props["is-adding-task"] === "true" ? "block" : "none"};
+        visibility: ${(props) =>
+            props["is-adding-task"] === "true" ? "visible" : "hidden"};
+        position: ${(props) =>
+            props["is-adding-task"] === "true" ? "unset" : "absolute"};
 
         #add-task-buttons:hover {
             background-color: #a6c5e229;

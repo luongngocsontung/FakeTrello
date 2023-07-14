@@ -11,7 +11,11 @@ export interface TrelloListProps {
 
 function TrelloList({ listId }: TrelloListProps) {
     return (
-        <StyledTrelloList id="list-dnd" className="drag-element">
+        <StyledTrelloList
+            id="list-dnd"
+            className="drag-element"
+            trello-id={listId}
+        >
             <StyledCard id="trello-list">
                 <div id="trello-list-container">
                     <ListHeader listId={listId} />

@@ -17,7 +17,7 @@ function FakeTrello() {
                 <SaveTrelloButton />
             </div>
             <div id="board">
-                <div id="lists-container" className="droppable horizontal-drop">
+                <div id="lists-container" className="droppable">
                     {listsId.map((id) => {
                         return <TrelloList key={id} listId={id} />;
                     })}
