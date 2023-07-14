@@ -5,7 +5,7 @@ import { addList } from "../../features/Lists/listsSlice";
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import { styled } from "styled-components";
 import { StyledCard } from ".";
-import { getNewId } from "../../utils/newId";
+import { getNewId } from "../../utils/functions";
 
 function AddListButton() {
     const [isAddingList, setIsAddingList] = useState(false);
@@ -89,7 +89,8 @@ const StyledAddListButton = styled.div<CustomComponentProps>`
     }
 
     #add-list-container {
-        opacity: ${(props) => (props["is-adding-list"] === "true" ? "1" : "0")};
+        visibility: ${(props) =>
+            props["is-adding-list"] === "true" ? "visible" : "hidden"};
         padding: 8px;
 
         #add-list-buttons:hover {

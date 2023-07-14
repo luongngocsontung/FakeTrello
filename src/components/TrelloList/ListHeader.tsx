@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { changeListTitle, trelloList } from "../../features/Lists/listsSlice";
+import {
+    changeListTitle,
+    trelloListTitle,
+} from "../../features/Lists/listsSlice";
 import { TrelloListProps } from ".";
 import { EllipsisOutlined } from "@ant-design/icons";
 
 function ListHeader({ listId }: TrelloListProps) {
-    const list = useAppSelector((state) => trelloList(state, listId));
+    const listTitle = useAppSelector((state) => trelloListTitle(state, listId));
     const dispatch = useAppDispatch();
-    const [title, setTitle] = useState(list?.title);
+    const [title, setTitle] = useState(listTitle);
 
     const handleChangeListTitle = (
         e: React.FocusEvent<HTMLInputElement, Element>
@@ -16,7 +19,7 @@ function ListHeader({ listId }: TrelloListProps) {
         e.currentTarget.setAttribute("isFocus", "false");
         const newTitle = e.target.value;
         if (!newTitle) {
-            return setTitle(list?.title);
+            return setTitle(listTitle);
         }
 
         dispatch(
@@ -46,6 +49,7 @@ const StyledListHeader = styled.div`
     align-items: center;
     justify-content: space-between;
     padding: 8px;
+    cursor: pointer;
 
     #list-title {
         width: 100%;

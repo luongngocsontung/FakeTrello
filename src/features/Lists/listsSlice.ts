@@ -52,8 +52,11 @@ export const ListsSlice = createSlice({
     },
 });
 
-export const trelloList = (state: RootState, listId: string) =>
-    state.lists.find((list) => list.id === listId);
+export const trelloListTasksId = (state: RootState, listId: string) =>
+    state.lists.find((list) => list.id === listId)?.tasksId;
+
+export const trelloListTitle = (state: RootState, listId: string) =>
+    state.lists.find((list) => list.id === listId)?.title;
 
 export const { addList, changeListTitle } = ListsSlice.actions;
 
