@@ -202,7 +202,11 @@ function useDragAndDrop() {
         }
         if (!draggingElement) return;
         // update state if reorder
-        if (draggingElement.id === "list-dnd" && touchedElement) {
+        if (
+            draggingElement.id === "list-dnd" &&
+            touchedElement &&
+            dropPoistion
+        ) {
             dispatch(
                 reOrderList({
                     draggingId: draggingElement.getAttribute("trello-id")!,
@@ -210,7 +214,11 @@ function useDragAndDrop() {
                     dropPosition: dropPoistion,
                 })
             );
-        } else if (draggingElement.id === "task-dnd" && placeHolderElement) {
+        } else if (
+            draggingElement.id === "task-dnd" &&
+            placeHolderElement &&
+            dropPoistion
+        ) {
             const taskDraggingListId = draggingElement
                 .closest("#list-dnd")
                 ?.getAttribute("trello-id")!;
