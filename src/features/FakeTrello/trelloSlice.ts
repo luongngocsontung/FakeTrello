@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { addList } from "../Lists/listsSlice";
-import { swap } from "../../utils/functions";
+import { reOrderInSameDroppableEl, swap } from "../../utils/functions";
 
 export interface TrelloState {
     listsId: string[];
@@ -39,17 +39,12 @@ export const trelloSlice = createSlice({
             const indexDragging = state.listsId.indexOf(draggingId);
             const indexSwap = state.listsId.indexOf(insertId);
 
-            if (indexDragging < indexSwap) {
-                for (let i = indexDragging; i < indexSwap; i++) {
-                    if (i == indexSwap - 1 && dropPosition === "before") break;
-                    swap(state.listsId, i, i + 1);
-                }
-            } else if (indexDragging > indexSwap) {
-                for (let i = indexDragging; i > indexSwap; i--) {
-                    if (i === indexSwap + 1 && dropPosition === "after") break;
-                    swap(state.listsId, i, i - 1);
-                }
-            }
+            reOrderInSameDroppableEl(
+                state.listsId,
+                indexDragging,
+                indexSwap,
+                dropPosition
+            );
         },
     },
     extraReducers: (builder) => {

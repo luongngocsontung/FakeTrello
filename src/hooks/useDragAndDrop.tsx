@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppDispatch } from "../app/hooks";
 import { reOrderList } from "../features/FakeTrello/trelloSlice";
+import { reOrderTask } from "../features/Lists/listsSlice";
 
 let draggingElement: HTMLDivElement | null = null;
 let draggingElType: string = "";
@@ -11,9 +12,11 @@ let shiftY = 0;
 let mouseClientX = 0;
 let mouseClientY = 0;
 let isMoving = false;
-let draggingId: string | null = null;
-let dropPoistion: string | null = null;
-let swapElementId: string | null = null;
+let draggingId: string | null = "";
+let dropPoistion: string = "";
+let swapElementId: string | null = "";
+let taskDraggingListId: string | undefined | null = "";
+let taskDropListId: string | undefined | null = "";
 
 function useDragAndDrop() {
     const dispatch = useAppDispatch();
@@ -83,6 +86,10 @@ function useDragAndDrop() {
                 draggingId = draggingElement.getAttribute("trello-id");
                 // get dragging element type
                 draggingElType = draggingElement.id;
+                // get list id if draggingEl is a task
+                taskDraggingListId = draggingElement
+                    .closest("#list-dnd")
+                    ?.getAttribute("trello-id");
             }
         } else {
             if (!cloneDraggingElement) return;
@@ -110,7 +117,10 @@ function useDragAndDrop() {
                         ?.closest("#list-dnd")
                         ?.getElementsByClassName("droppable")[0];
                     if (!droppableElement) return;
-
+                    // Get list Id that task about to drop in
+                    taskDropListId = elementBelow
+                        .closest("#list-dnd")
+                        ?.getAttribute("trello-id");
                     // Get middleY of droppableElement
                     const boundingClientRectDroppable =
                         droppableElement?.getBoundingClientRect();
@@ -119,9 +129,13 @@ function useDragAndDrop() {
                         boundingClientRectDroppable.height / 2;
                     /* if mouse's position is on upper half of droppableEl then prepend
                         else then append */
-                    if (e.clientY <= middleY)
+                    if (e.clientY <= middleY) {
                         droppableElement.prepend(draggingElement);
-                    else droppableElement.append(draggingElement);
+                        dropPoistion = "top";
+                    } else {
+                        droppableElement.append(draggingElement);
+                        dropPoistion = "bottom";
+                    }
                 }
                 return;
             }
@@ -132,6 +146,10 @@ function useDragAndDrop() {
 
             const manipulateDom = (type: "list" | "task") => {
                 if (!droppableElement || !draggingElement) return;
+                // get list id if task about to drop in
+                taskDropListId = swapElement
+                    .closest("#list-dnd")
+                    ?.getAttribute("trello-id");
                 // Check if user is moving mouse down/right or up/left
                 const mouseNext =
                     type === "list"
@@ -179,8 +197,8 @@ function useDragAndDrop() {
             clickedElement.focus();
         }
         // update state if reorder
-        if (draggingId && swapElementId && dropPoistion) {
-            if (draggingElType === "list-dnd")
+        if (draggingId && dropPoistion) {
+            if (draggingElType === "list-dnd" && swapElementId)
                 dispatch(
                     reOrderList({
                         draggingId: draggingId,
@@ -188,6 +206,21 @@ function useDragAndDrop() {
                         dropPosition: dropPoistion,
                     })
                 );
+            else if (
+                draggingElType === "task-dnd" &&
+                taskDraggingListId &&
+                taskDropListId
+            ) {
+                dispatch(
+                    reOrderTask({
+                        draggingId: draggingId,
+                        insertId: swapElementId,
+                        dropPoistion: dropPoistion,
+                        taskDraggingListId: taskDraggingListId,
+                        taskDropListId: taskDropListId,
+                    })
+                );
+            }
         }
 
         // Clean up
@@ -200,10 +233,12 @@ function useDragAndDrop() {
         isMoving = false;
         mouseClientX = 0;
         mouseClientY = 0;
-        draggingId = null;
-        dropPoistion = null;
-        swapElementId = null;
+        draggingId = "";
+        dropPoistion = "";
+        swapElementId = "";
         draggingElType = "";
+        taskDraggingListId = "";
+        taskDropListId = "";
     };
 
     // Handle On Mouse Down
