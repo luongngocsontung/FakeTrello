@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppDispatch } from "../app/hooks";
 import { reOrderList } from "../features/FakeTrello/trelloSlice";
-import { reOrderTask, tempDelete } from "../features/Lists/listsSlice";
+import { reOrderTask } from "../features/Lists/listsSlice";
 
 let draggingElement: HTMLDivElement | null = null;
 let draggingElType: string = "";
@@ -15,7 +15,6 @@ let isMoving = false;
 let draggingId: string | null = "";
 let dropPoistion: string = "";
 let swapElementId: string | null = "";
-let taskDraggingListId: string | undefined | null = "";
 let taskDropListId: string | undefined | null = "";
 
 function useDragAndDrop() {
@@ -86,10 +85,6 @@ function useDragAndDrop() {
                 draggingId = draggingElement.getAttribute("trello-id");
                 // get dragging element type
                 draggingElType = draggingElement.id;
-                // get list id if draggingEl is a task
-                taskDraggingListId = draggingElement
-                    .closest("#list-dnd")
-                    ?.getAttribute("trello-id");
             }
         } else {
             if (!cloneDraggingElement) return;
@@ -206,17 +201,12 @@ function useDragAndDrop() {
                         dropPosition: dropPoistion,
                     })
                 );
-            else if (
-                draggingElType === "task-dnd" &&
-                taskDraggingListId &&
-                taskDropListId
-            ) {
+            else if (draggingElType === "task-dnd" && taskDropListId) {
                 dispatch(
                     reOrderTask({
                         draggingId: draggingId,
                         insertId: swapElementId,
                         dropPoistion: dropPoistion,
-                        taskDraggingListId: taskDraggingListId,
                         taskDropListId: taskDropListId,
                     })
                 );
@@ -237,7 +227,6 @@ function useDragAndDrop() {
         dropPoistion = "";
         swapElementId = "";
         draggingElType = "";
-        taskDraggingListId = "";
         taskDropListId = "";
     };
 
