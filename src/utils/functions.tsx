@@ -54,13 +54,14 @@ export const addTaskToAnotherList = (
     indexSwap: number,
     dropPosition: string
 ) => {
-    const taskDraggingId = taskDraggingList.tasksId[indexDragging];
-    console.log(">>>>", indexDragging);
-    // Remove task dragging in it's origin list
-    taskDraggingList.tasksId = [
-        ...taskDraggingList.tasksId.slice(0, indexDragging),
-        // ...taskDraggingList.tasksId.slice(indexDragging + 1),
-    ];
+    // const taskDraggingId = taskDraggingList.tasksId[indexDragging];
+    // console.log(">>>>", indexDragging);
+    // // Remove task dragging in it's origin list
+    // taskDraggingList.tasksId = [
+    //     ...taskDraggingList.tasksId.slice(0, indexDragging),
+    //     // ...taskDraggingList.tasksId.slice(indexDragging + 1),
+    // ];
+    taskDraggingList.tasksId.splice(indexDragging, 1);
 
     // Handle drop position for top/bottom first
     // if (dropPosition === "top") {

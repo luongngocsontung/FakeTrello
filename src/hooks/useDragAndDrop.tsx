@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppDispatch } from "../app/hooks";
 import { reOrderList } from "../features/FakeTrello/trelloSlice";
-import { reOrderTask } from "../features/Lists/listsSlice";
+import { reOrderTask, tempDelete } from "../features/Lists/listsSlice";
 
 let draggingElement: HTMLDivElement | null = null;
 let draggingElType: string = "";

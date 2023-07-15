@@ -90,6 +90,11 @@ export const ListsSlice = createSlice({
                 );
             }
         },
+        tempDelete: (state, changes: PayloadAction<{ listId: string }>) => {
+            const { listId } = changes.payload;
+            const list = state.find((list) => list.id === listId);
+            list?.tasksId.pop();
+        },
     },
     extraReducers(builder) {
         // Add new Task Id to a list
@@ -110,6 +115,7 @@ export const trelloListTasksId = (state: RootState, listId: string) =>
 export const trelloListTitle = (state: RootState, listId: string) =>
     state.lists.find((list) => list.id === listId)?.title;
 
-export const { addList, changeListTitle, reOrderTask } = ListsSlice.actions;
+export const { addList, changeListTitle, reOrderTask, tempDelete } =
+    ListsSlice.actions;
 
 export default ListsSlice.reducer;

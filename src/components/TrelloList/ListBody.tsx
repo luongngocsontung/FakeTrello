@@ -2,7 +2,7 @@ import React from "react";
 import { TrelloListProps } from ".";
 import { styled } from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { trelloListTasksId } from "../../features/Lists/listsSlice";
+import { tempDelete, trelloListTasksId } from "../../features/Lists/listsSlice";
 import TrelloTask from "../TrelloTask";
 
 function ListBody({ listId }: TrelloListProps) {
@@ -18,6 +18,13 @@ function ListBody({ listId }: TrelloListProps) {
             {listTasksId.map((id) => {
                 return <TrelloTask key={id} taskId={id} />;
             })}
+            {/* <button
+                onClick={() => {
+                    dispatch(tempDelete({ listId: listId }));
+                }}
+            >
+                Delete
+            </button> */}
         </StyledListBody>
     );
 }
