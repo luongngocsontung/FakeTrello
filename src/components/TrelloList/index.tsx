@@ -33,7 +33,7 @@ const StyledTrelloList = styled.div`
     }
 
     &.dragging #trello-list-container {
-        visibility: hidden;
+        opacity: 0;
     }
 
     #trello-list {

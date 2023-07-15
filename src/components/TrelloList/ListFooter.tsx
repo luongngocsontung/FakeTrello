@@ -99,6 +99,10 @@ const StyledListFooter = styled.div<CustomComponentProps>`
         position: ${(props) =>
             props["is-adding-task"] === "true" ? "unset" : "absolute"};
 
+        input {
+            transition: none;
+        }
+
         #add-task-buttons:hover {
             background-color: #a6c5e229;
         }
@@ -111,6 +115,10 @@ const StyledListFooter = styled.div<CustomComponentProps>`
             #confirm-add-task {
                 color: #1d2125;
                 font-weight: 400;
+            }
+
+            button {
+                transition: none;
             }
         }
     }

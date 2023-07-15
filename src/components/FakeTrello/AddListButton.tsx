@@ -93,6 +93,10 @@ const StyledAddListButton = styled.div<CustomComponentProps>`
             props["is-adding-list"] === "true" ? "visible" : "hidden"};
         padding: 8px;
 
+        input {
+            transition: none;
+        }
+
         #add-list-buttons:hover {
             background-color: #a6c5e229;
         }
@@ -105,6 +109,10 @@ const StyledAddListButton = styled.div<CustomComponentProps>`
             #confirm-add-list {
                 color: #1d2125;
                 font-weight: 400;
+            }
+
+            button {
+                transition: none;
             }
         }
     }

@@ -26,8 +26,7 @@ function useDragAndDrop() {
 
     const handleOnMouseDown = (e: MouseEvent) => {
         // Only check for left mouse down
-        if (e.button !== 0) return;
-
+        if (e.button !== 0 || draggingElement) return;
         const target = e.target as HTMLElement;
         // .draggable are elements used for triggering DND
         const draggableElement = target.closest(".draggable");
@@ -201,8 +200,7 @@ function useDragAndDrop() {
         if (!isMoving && clickedElement) {
             clickedElement.focus();
         }
-        if (!draggingElement || !placeHolderElement || !cloneDraggingElement)
-            return;
+        if (!draggingElement) return;
         // update state if reorder
         if (draggingElement.id === "list-dnd" && touchedElement) {
             dispatch(
@@ -212,7 +210,7 @@ function useDragAndDrop() {
                     dropPosition: dropPoistion,
                 })
             );
-        } else if (draggingElement.id === "task-dnd") {
+        } else if (draggingElement.id === "task-dnd" && placeHolderElement) {
             const taskDraggingListId = draggingElement
                 .closest("#list-dnd")
                 ?.getAttribute("trello-id")!;
@@ -229,15 +227,13 @@ function useDragAndDrop() {
                 })
             );
         }
-
+        document.removeEventListener("mousemove", handleOnMouseMove);
         // Clean up
         draggingElement.hidden = false;
-        // draggingElement.remove();
         draggingElement = null;
-        cloneDraggingElement.remove();
+        cloneDraggingElement?.remove();
         cloneDraggingElement = null;
-        // placeHolderElement?.classList.replace("dragging", "drag-element");
-        placeHolderElement.remove();
+        placeHolderElement?.remove();
         placeHolderElement = null;
         clickedElement = null;
         touchedElement = null;
@@ -245,7 +241,6 @@ function useDragAndDrop() {
         mouseClientX = 0;
         mouseClientY = 0;
         dropPoistion = "";
-        document.removeEventListener("mousemove", handleOnMouseMove);
     };
 
     // Handle On Mouse Down

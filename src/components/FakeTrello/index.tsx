@@ -1,29 +1,18 @@
 import { styled } from "styled-components";
-import { useAppSelector } from "../../app/hooks";
-import { trelloListsId } from "../../features/FakeTrello/trelloSlice";
-import TrelloList from "../TrelloList";
-import AddListButton from "./AddListButton";
 import SaveTrelloButton from "./SaveTrelloButton";
 import useDragAndDrop from "../../hooks/useDragAndDrop";
+import TrelloBoard from "./TrelloBoard";
 
 function FakeTrello() {
-    const listsId = useAppSelector(trelloListsId);
     useDragAndDrop();
-
+    console.log("Asdsad");
     return (
         <StyledFakeTrello>
             <div id="title">
                 <span>Fake Trello</span>
                 <SaveTrelloButton />
             </div>
-            <div id="board">
-                <div id="lists-container" className="droppable">
-                    {listsId.map((id) => {
-                        return <TrelloList key={id} listId={id} />;
-                    })}
-                    <AddListButton />
-                </div>
-            </div>
+            <TrelloBoard />
         </StyledFakeTrello>
     );
 }
