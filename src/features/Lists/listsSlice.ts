@@ -47,13 +47,48 @@ export const ListsSlice = createSlice({
             state,
             changes: PayloadAction<{
                 draggingId: string;
-                insertId: string | null;
-                dropPoistion: string;
+                touchedId: string | null;
+                dropPosition: string;
+                taskDraggingListId: string;
                 taskDropListId: string;
             }>
         ) => {
-            const { draggingId, insertId, dropPoistion, taskDropListId } =
-                changes.payload;
+            const {
+                draggingId,
+                touchedId,
+                dropPosition,
+                taskDraggingListId,
+                taskDropListId,
+            } = changes.payload;
+
+            const taskDraggingList = state.find(
+                (list) => list.id === taskDraggingListId
+            )!;
+            const indexDragging = taskDraggingList.tasksId.indexOf(draggingId);
+            const taskDropList = state.find(
+                (list) => list.id === taskDropListId
+            )!;
+            const indexSwap = taskDropList.tasksId.indexOf(touchedId || "");
+
+            if (taskDraggingListId === taskDropListId) {
+                const indexSwap = taskDraggingList.tasksId.indexOf(
+                    touchedId || ""
+                );
+                reOrderInSameDroppableEl(
+                    taskDraggingList.tasksId,
+                    indexDragging,
+                    indexSwap,
+                    dropPosition
+                );
+            } else {
+                addTaskToAnotherList(
+                    taskDraggingList,
+                    taskDropList,
+                    indexDragging,
+                    indexSwap,
+                    dropPosition
+                );
+            }
         },
     },
     extraReducers(builder) {

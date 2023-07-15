@@ -4,31 +4,30 @@ import { reOrderList } from "../features/FakeTrello/trelloSlice";
 import { reOrderTask } from "../features/Lists/listsSlice";
 
 let draggingElement: HTMLDivElement | null = null;
-let draggingElType: string = "";
+let placeHolderElement: HTMLDivElement | null = null;
 let cloneDraggingElement: HTMLDivElement | null = null;
 let clickedElement: HTMLElement | null = null;
+let touchedElement: HTMLDivElement | null | undefined = null;
+let dropPoistion: string = "";
 let shiftX = 0;
 let shiftY = 0;
 let mouseClientX = 0;
 let mouseClientY = 0;
 let isMoving = false;
-let draggingId: string | null = "";
-let dropPoistion: string = "";
-let swapElementId: string | null = "";
-let taskDropListId: string | undefined | null = "";
 
 function useDragAndDrop() {
     const dispatch = useAppDispatch();
 
-    // Move Element with mouse's position
+    // Move cloneElement with mouse's position
     const moveAt = (pageX: number, pageY: number) => {
         cloneDraggingElement!.style.left = pageX - shiftX + "px";
         cloneDraggingElement!.style.top = pageY - shiftY + "px";
     };
 
     const handleOnMouseDown = (e: MouseEvent) => {
-        // Only check for left click
+        // Only check for left mouse down
         if (e.button !== 0) return;
+
         const target = e.target as HTMLElement;
         // .draggable are elements used for triggering DND
         const draggableElement = target.closest(".draggable");
@@ -39,7 +38,7 @@ function useDragAndDrop() {
         e.preventDefault();
         // Store CLicked Element for handle on mouse up because of preventDefault
         clickedElement = target;
-        // .drag-element are elements will be moved when DND
+        // .drag-element is element will be moved when DND
         draggingElement = draggableElement.closest(".drag-element");
         if (!draggingElement) return;
 
@@ -63,11 +62,11 @@ function useDragAndDrop() {
                 Math.abs(e.clientY - mouseClientY) > 5;
             if (isAbleMoving) {
                 isMoving = true;
-                const tempDiv = document.createElement("div");
-                tempDiv.append(draggingElement.cloneNode(true));
-                cloneDraggingElement = tempDiv;
+                cloneDraggingElement = draggingElement.cloneNode(
+                    true
+                ) as HTMLDivElement;
 
-                // set up styling for moving
+                // set up styles for moving
                 cloneDraggingElement.style.position = "absolute";
                 cloneDraggingElement.style.zIndex = "1000";
                 cloneDraggingElement.style.width =
@@ -79,72 +78,80 @@ function useDragAndDrop() {
                 // append to body
                 document.body.append(cloneDraggingElement);
                 moveAt(e.pageX, e.pageY);
-                // add class to dragging element to make it look as a placeholder
-                draggingElement.classList.replace("drag-element", "dragging");
-                // get dragging trello-id
-                draggingId = draggingElement.getAttribute("trello-id");
-                // get dragging element type
-                draggingElType = draggingElement.id;
+                // Add a placeholder
+                placeHolderElement = draggingElement.cloneNode(
+                    true
+                ) as HTMLDivElement;
+                placeHolderElement.id = "";
+                // add class to placeholder element to make it look like a placeholder
+                placeHolderElement.classList.replace(
+                    "drag-element",
+                    "dragging"
+                );
+                // hide dragging element because we already have placeholder
+                draggingElement.hidden = true;
+                // add placeholder right before dragging element
+                const droppableEl = draggingElement.closest(".droppable");
+                droppableEl?.insertBefore(placeHolderElement, draggingElement);
             }
         } else {
-            if (!cloneDraggingElement) return;
+            if (!cloneDraggingElement || !placeHolderElement) return;
+            // Start moving clone Element
             moveAt(e.pageX, e.pageY);
 
-            // Get valid Elment for swapping elements's place
+            // Get touched Element
             cloneDraggingElement.hidden = true;
-            const swapElement: HTMLDivElement | null | undefined = document
-                .elementFromPoint(e.clientX, e.clientY)
-                ?.closest(`.drag-element#${draggingElement.id}`);
+            const mouseTouchedElement: HTMLDivElement | undefined | null =
+                document
+                    .elementFromPoint(e.clientX, e.clientY)
+                    ?.closest(`.drag-element#${draggingElement.id}`);
             cloneDraggingElement.hidden = false;
             // Handle for DND task to another List
-            if (!swapElement) {
-                if (draggingElement.id === "task-dnd") {
-                    cloneDraggingElement.hidden = true;
-                    const elementBelow = document.elementFromPoint(
-                        e.clientX,
-                        e.clientY
-                    );
-                    cloneDraggingElement.hidden = false;
-                    // If still inside droppable task then do not thing
-                    if (elementBelow?.closest(".droppable#list-body")) return;
-                    // Get task droppable container and append/prepend task
-                    const droppableElement = elementBelow
-                        ?.closest("#list-dnd")
-                        ?.getElementsByClassName("droppable")[0];
-                    if (!droppableElement) return;
-                    // Get list Id that task about to drop in
-                    taskDropListId = elementBelow
-                        .closest("#list-dnd")
-                        ?.getAttribute("trello-id");
-                    // Get middleY of droppableElement
-                    const boundingClientRectDroppable =
-                        droppableElement?.getBoundingClientRect();
-                    const middleY =
-                        boundingClientRectDroppable.top +
-                        boundingClientRectDroppable.height / 2;
-                    /* if mouse's position is on upper half of droppableEl then prepend
+            if (!mouseTouchedElement && draggingElement.id === "task-dnd") {
+                cloneDraggingElement.hidden = true;
+                const elementBelow = document.elementFromPoint(
+                    e.clientX,
+                    e.clientY
+                );
+                cloneDraggingElement.hidden = false;
+                // If still inside droppable task then do not thing
+                if (elementBelow?.closest(".droppable#list-body")) return;
+                // Get task droppable list (tasks container) and append/prepend task
+                const droppableElement = elementBelow
+                    ?.closest("#list-dnd")
+                    ?.getElementsByClassName("droppable")[0];
+                if (!droppableElement) return;
+
+                // Get middleY of droppableElement
+                const boundingClientRectDroppable =
+                    droppableElement?.getBoundingClientRect();
+                const middleY =
+                    boundingClientRectDroppable.top +
+                    boundingClientRectDroppable.height / 2;
+                /* if mouse's position is on upper half of droppableEl then prepend
                         else then append */
-                    if (e.clientY <= middleY) {
-                        droppableElement.prepend(draggingElement);
-                        dropPoistion = "top";
-                    } else {
-                        droppableElement.append(draggingElement);
-                        dropPoistion = "bottom";
-                    }
+                if (e.clientY <= middleY) {
+                    droppableElement.prepend(placeHolderElement);
+                    dropPoistion = "top";
+                } else {
+                    droppableElement.append(placeHolderElement);
+                    dropPoistion = "bottom";
                 }
                 return;
             }
-
-            swapElementId = swapElement.getAttribute("trello-id");
-
-            const droppableElement = swapElement.closest(".droppable");
+            if (!mouseTouchedElement) return;
+            touchedElement = mouseTouchedElement;
+            const droppableElement = touchedElement.closest(".droppable");
 
             const manipulateDom = (type: "list" | "task") => {
-                if (!droppableElement || !draggingElement) return;
-                // get list id if task about to drop in
-                taskDropListId = swapElement
-                    .closest("#list-dnd")
-                    ?.getAttribute("trello-id");
+                if (
+                    !droppableElement ||
+                    !draggingElement ||
+                    !placeHolderElement ||
+                    !touchedElement
+                )
+                    return;
+
                 // Check if user is moving mouse down/right or up/left
                 const mouseNext =
                     type === "list"
@@ -154,80 +161,91 @@ function useDragAndDrop() {
                     type === "list"
                         ? e.clientX < mouseClientX
                         : e.clientY < mouseClientY;
-                const swapNextSibling = swapElement.nextElementSibling;
+
+                const touchedElSibling = touchedElement.nextElementSibling;
                 // Reassign mouseClient for the next mouse move check
                 mouseClientX = e.clientX;
                 mouseClientY = e.clientY;
                 // If user is moving mouse to right (list) or down (task)
                 if (mouseNext) {
-                    if (swapNextSibling) {
+                    if (touchedElSibling) {
                         droppableElement.insertBefore(
-                            draggingElement,
-                            swapNextSibling
+                            placeHolderElement,
+                            touchedElSibling
                         );
                         dropPoistion = "after";
                     } else {
-                        droppableElement.append(draggingElement);
+                        droppableElement.append(placeHolderElement);
                         dropPoistion = "after";
                     }
                 }
                 // If user is moving mouse to left (list) or up (task)
                 else if (mousePrevious) {
-                    droppableElement.insertBefore(draggingElement, swapElement);
+                    droppableElement.insertBefore(
+                        placeHolderElement,
+                        touchedElement
+                    );
                     dropPoistion = "before";
                 }
             };
 
             // Swap for Lists
-            if (draggingElType === "list-dnd") manipulateDom("list");
+            if (draggingElement.id === "list-dnd") manipulateDom("list");
             // Swap for Tasks
-            else if (draggingElType === "task-dnd") manipulateDom("task");
+            else if (draggingElement.id === "task-dnd") manipulateDom("task");
         }
     };
 
     const handleOnMouseUp = (e: MouseEvent) => {
-        if (!draggingElement) return;
         // Handle focus input for List Title
         if (!isMoving && clickedElement) {
             clickedElement.focus();
         }
+        if (!draggingElement || !placeHolderElement || !cloneDraggingElement)
+            return;
         // update state if reorder
-        if (draggingId && dropPoistion) {
-            if (draggingElType === "list-dnd" && swapElementId)
-                dispatch(
-                    reOrderList({
-                        draggingId: draggingId,
-                        insertId: swapElementId,
-                        dropPosition: dropPoistion,
-                    })
-                );
-            else if (draggingElType === "task-dnd" && taskDropListId) {
-                dispatch(
-                    reOrderTask({
-                        draggingId: draggingId,
-                        insertId: swapElementId,
-                        dropPoistion: dropPoistion,
-                        taskDropListId: taskDropListId,
-                    })
-                );
-            }
+        if (draggingElement.id === "list-dnd" && touchedElement) {
+            dispatch(
+                reOrderList({
+                    draggingId: draggingElement.getAttribute("trello-id")!,
+                    touchedId: touchedElement.getAttribute("trello-id")!,
+                    dropPosition: dropPoistion,
+                })
+            );
+        } else if (draggingElement.id === "task-dnd") {
+            const taskDraggingListId = draggingElement
+                .closest("#list-dnd")
+                ?.getAttribute("trello-id")!;
+            const taskDropListId = placeHolderElement
+                .closest("#list-dnd")
+                ?.getAttribute("trello-id")!;
+            dispatch(
+                reOrderTask({
+                    draggingId: draggingElement.getAttribute("trello-id")!,
+                    touchedId: touchedElement?.getAttribute("trello-id")!,
+                    dropPosition: dropPoistion,
+                    taskDraggingListId: taskDraggingListId,
+                    taskDropListId: taskDropListId,
+                })
+            );
         }
 
         // Clean up
-        document.removeEventListener("mousemove", handleOnMouseMove);
-        draggingElement.classList.replace("dragging", "drag-element");
+        draggingElement.hidden = false;
+        // draggingElement.remove();
         draggingElement = null;
-        cloneDraggingElement?.remove();
+        cloneDraggingElement.remove();
         cloneDraggingElement = null;
+        // placeHolderElement?.classList.replace("dragging", "drag-element");
+        placeHolderElement.remove();
+        placeHolderElement = null;
         clickedElement = null;
+        touchedElement = null;
         isMoving = false;
         mouseClientX = 0;
         mouseClientY = 0;
-        draggingId = "";
         dropPoistion = "";
-        swapElementId = "";
-        draggingElType = "";
-        taskDropListId = "";
+        document.removeEventListener("mousemove", handleOnMouseMove);
     };
 
     // Handle On Mouse Down

@@ -31,7 +31,7 @@ export const reOrderInSameDroppableEl = (
         }
         return;
     }
-
+    console.log("HELLLO", indexDragging, indexSwap);
     if (indexDragging < indexSwap) {
         for (let i = indexDragging; i < indexSwap; i++) {
             if (i == indexSwap - 1 && dropPosition === "before") break;
@@ -54,28 +54,25 @@ export const addTaskToAnotherList = (
     indexSwap: number,
     dropPosition: string
 ) => {
-    // const taskDraggingId = taskDraggingList.tasksId[indexDragging];
-    // console.log(">>>>", indexDragging);
-    // // Remove task dragging in it's origin list
-    // taskDraggingList.tasksId = [
-    //     ...taskDraggingList.tasksId.slice(0, indexDragging),
-    //     // ...taskDraggingList.tasksId.slice(indexDragging + 1),
-    // ];
-    taskDraggingList.tasksId.splice(indexDragging, 1);
+    const taskDraggingId = taskDraggingList.tasksId[indexDragging];
+    // Remove task dragging in it's origin list
+    taskDraggingList.tasksId = taskDraggingList.tasksId.filter(
+        (id) => id !== taskDraggingId
+    );
 
-    // Handle drop position for top/bottom first
-    // if (dropPosition === "top") {
-    //     return taskDropList.unshift(taskDraggingId);
-    // } else if (dropPosition === "bottom") {
-    //     return taskDropList.push(taskDraggingId);
-    // }
     // get index to insert dragging task to new list
-    // const indexPut =
-    //     dropPosition === "after"
-    //         ? indexSwap + 1
-    //         : dropPosition === "before"
-    //         ? indexSwap - 1
-    //         : indexSwap;
-    // // Add task dragging to new list
-    // taskDropList.splice(indexPut, 0, taskDraggingId);
+    const indexAppend =
+        dropPosition === "top"
+            ? 0
+            : dropPosition === "bottom"
+            ? taskDropList.tasksId.length
+            : dropPosition === "after"
+            ? indexSwap + 1
+            : indexSwap;
+    // Add task dragging to new list
+    taskDropList.tasksId = [
+        ...taskDropList.tasksId.slice(0, indexAppend),
+        taskDraggingId,
+        ...taskDropList.tasksId.slice(indexAppend),
+    ];
 };

@@ -30,14 +30,14 @@ export const trelloSlice = createSlice({
             state,
             params: PayloadAction<{
                 draggingId: string;
-                insertId: string;
+                touchedId: string;
                 dropPosition: string;
             }>
         ) => {
-            const { draggingId, insertId, dropPosition } = params.payload;
+            const { draggingId, touchedId, dropPosition } = params.payload;
 
             const indexDragging = state.listsId.indexOf(draggingId);
-            const indexSwap = state.listsId.indexOf(insertId);
+            const indexSwap = state.listsId.indexOf(touchedId);
 
             reOrderInSameDroppableEl(
                 state.listsId,
