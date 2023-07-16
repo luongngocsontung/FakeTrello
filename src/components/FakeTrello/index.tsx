@@ -2,14 +2,34 @@ import { styled } from "styled-components";
 import SaveTrelloButton from "./SaveTrelloButton";
 import useDragAndDrop from "../../hooks/useDragAndDrop";
 import TrelloBoard from "./TrelloBoard";
+import { Button } from "antd";
 
 function FakeTrello() {
     useDragAndDrop();
-    console.log("Asdsad");
+
+    const getDataHref = () => {
+        const localKeys = ["trello", "trelloLists", "trelloTasks"];
+        const data: any = {};
+        localKeys.forEach((key) => {
+            data[key] = JSON.parse(localStorage.getItem(key) || "");
+            console.log(localStorage.getItem(key));
+        });
+        const jsonData = JSON.stringify(data, null, 2);
+        // const jsonData = JSON.stringify(localStorage, null, 2);
+        const blob = new Blob([jsonData], {
+            type: "application/json",
+        });
+        const downloadUrl = URL.createObjectURL(blob);
+        return downloadUrl;
+    };
+
     return (
         <StyledFakeTrello>
             <div id="title">
                 <span>Fake Trello</span>
+                <Button href={getDataHref()} download={"data.json"}>
+                    Download JSON files
+                </Button>
                 <SaveTrelloButton />
             </div>
             <TrelloBoard />
@@ -33,7 +53,7 @@ const StyledFakeTrello = styled.div`
         justify-content: space-between;
         align-items: center;
 
-        button {
+        #save-button {
             border-width: 3px;
             color: inherit;
             width: 80px;

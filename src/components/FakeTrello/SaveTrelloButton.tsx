@@ -8,9 +8,9 @@ function SaveTrelloButton() {
     const handleSaveToLocalStorage = () => {
         setIsSaving(true);
         const { trello, lists, tasks } = store.getState();
-        localStorage.setItem("trello", JSON.stringify(trello.listsId));
-        localStorage.setItem("trelloLists", JSON.stringify(lists));
-        localStorage.setItem("trelloTasks", JSON.stringify(tasks));
+        localStorage.setItem("trello", JSON.stringify(trello.listsId, null, 2));
+        localStorage.setItem("trelloLists", JSON.stringify(lists, null, 2));
+        localStorage.setItem("trelloTasks", JSON.stringify(tasks, null, 2));
 
         setTimeout(() => {
             setIsSaving(false);
@@ -18,7 +18,11 @@ function SaveTrelloButton() {
     };
 
     return (
-        <Button loading={isSaving} onClick={handleSaveToLocalStorage}>
+        <Button
+            id="save-button"
+            loading={isSaving}
+            onClick={handleSaveToLocalStorage}
+        >
             Save
         </Button>
     );
