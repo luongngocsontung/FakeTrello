@@ -29,6 +29,29 @@ const StyledListBody = styled.div`
     overflow-x: hidden;
     overflow-y: auto;
     gap: 7px;
+    margin: 0 4px;
+    padding: 0 4px;
+
+    /* Style for scroll bar */
+    &::-webkit-scrollbar {
+        height: 8px;
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-button {
+        display: block;
+        height: 100%;
+    }
+
+    &::-webkit-scrollbar-track-piece {
+        background-color: #1c2015;
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #323b35;
+        border-radius: 10px;
+    }
 `;
 
 export default ListBody;

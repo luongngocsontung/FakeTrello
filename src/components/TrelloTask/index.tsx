@@ -32,8 +32,6 @@ function TrelloTask({ taskId }: TrelloTaskProps) {
 }
 
 const StyledTrelloTask = styled.div`
-    padding: 0 8px 0 8px;
-
     &.dragging #trello-task {
         background-color: #a1bdd914;
     }
