@@ -39,7 +39,8 @@ export const TasksSlice = createSlice({
             params: PayloadAction<{ taskId: string; listId: string }>
         ) => {
             const { taskId } = params.payload;
-            state = state.filter((task) => task.id !== taskId);
+            const taskIndex = state.findIndex((task) => task.id === taskId);
+            state.splice(taskIndex, 1);
         },
     },
 });
