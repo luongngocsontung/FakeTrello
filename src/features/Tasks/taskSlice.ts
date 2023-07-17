@@ -33,12 +33,20 @@ export const TasksSlice = createSlice({
 
             task.title = params.payload.newTitle;
         },
+
+        deleteTask: (
+            state,
+            params: PayloadAction<{ taskId: string; listId: string }>
+        ) => {
+            const { taskId } = params.payload;
+            state = state.filter((task) => task.id !== taskId);
+        },
     },
 });
 
 export const trelloTaskTitle = (state: RootState, taskId: string) =>
     state.tasks.find((task) => task.id === taskId)?.title;
 
-export const { addTask, changeTaskTitle } = TasksSlice.actions;
+export const { addTask, changeTaskTitle, deleteTask } = TasksSlice.actions;
 
 export default TasksSlice.reducer;

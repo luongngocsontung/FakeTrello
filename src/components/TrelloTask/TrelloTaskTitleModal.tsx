@@ -8,6 +8,7 @@ import {
 import { Button, Input, Tag } from "antd";
 import {
     changeTaskTitle,
+    deleteTask,
     trelloTaskTitle,
 } from "../../features/Tasks/taskSlice";
 import { TextAreaRef } from "antd/es/input/TextArea";
@@ -23,7 +24,7 @@ function TrelloTaskTitleModal() {
     const dispatch = useAppDispatch();
     const [title, setTitle] = useState(taskTitle);
 
-    const clostModal = () => {
+    const closeModal = () => {
         dispatch(closeTaskTitleModal());
     };
 
@@ -31,14 +32,19 @@ function TrelloTaskTitleModal() {
         e: React.MouseEvent<HTMLDivElement, MouseEvent>
     ) => {
         const target = e.target as HTMLDivElement;
-        if (target.id === "task-title-modal") clostModal();
+        if (target.id === "task-title-modal") closeModal();
     };
 
     const handleChangeTaskTitle = () => {
         if (!title) return;
 
         dispatch(changeTaskTitle({ id: taskId, newTitle: title }));
-        clostModal();
+        closeModal();
+    };
+
+    const handleDeleteTask = () => {
+        dispatch(deleteTask({ taskId, listId }));
+        closeModal();
     };
 
     // Update position and select TextArea
@@ -99,6 +105,7 @@ function TrelloTaskTitleModal() {
                         icon={<DeleteOutlined />}
                         bordered={false}
                         className="action-buttons"
+                        onClick={handleDeleteTask}
                     >
                         <span>Delete</span>
                     </Tag>

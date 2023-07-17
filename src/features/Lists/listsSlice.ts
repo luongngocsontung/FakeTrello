@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { addTask } from "../Tasks/taskSlice";
+import { addTask, deleteTask } from "../Tasks/taskSlice";
 import {
     addTaskToAnotherList,
     reOrderInSameDroppableEl,
@@ -100,6 +100,15 @@ export const ListsSlice = createSlice({
             if (!list) return;
 
             list.tasksId.push(action.payload.id);
+        });
+
+        // Remove Task Id from its list
+        builder.addCase(deleteTask, (state, action) => {
+            const { listId, taskId } = action.payload;
+            const list = state.find((list) => list.id === listId);
+            if (!list) return;
+
+            list.tasksId = list?.tasksId.filter((id) => id !== taskId);
         });
     },
 });
