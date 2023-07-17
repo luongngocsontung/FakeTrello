@@ -32,7 +32,10 @@ function ListFooter({ listId }: TrelloListProps) {
                 type="ghost"
                 id="add-task-buttons"
                 icon={<PlusOutlined />}
-                onClick={() => setIsAddingTask(true)}
+                onClick={() => {
+                    setIsAddingTask(true);
+                    titleRef.current?.focus();
+                }}
             >
                 Add a task
             </Button>
@@ -94,8 +97,7 @@ const StyledListFooter = styled.div<CustomComponentProps>`
     }
 
     #add-task-container {
-        visibility: ${(props) =>
-            props["is-adding-task"] === "true" ? "visible" : "hidden"};
+        opacity: ${(props) => (props["is-adding-task"] === "true" ? "1" : "0")};
         position: ${(props) =>
             props["is-adding-task"] === "true" ? "unset" : "absolute"};
 

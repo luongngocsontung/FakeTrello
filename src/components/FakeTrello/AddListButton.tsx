@@ -89,8 +89,7 @@ const StyledAddListButton = styled.div<CustomComponentProps>`
     }
 
     #add-list-container {
-        visibility: ${(props) =>
-            props["is-adding-list"] === "true" ? "visible" : "hidden"};
+        opacity: ${(props) => (props["is-adding-list"] === "true" ? "1" : "0")};
         padding: 8px;
 
         input {
