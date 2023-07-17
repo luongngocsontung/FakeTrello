@@ -26,7 +26,7 @@ function AddListButton() {
     };
 
     return (
-        <StyledAddListButton is-adding-list={isAddingList.toString()}>
+        <StyledAddListButton className={isAddingList ? "open-add-list" : ""}>
             <Button
                 onClick={() => {
                     setIsAddingList(true);
@@ -71,14 +71,18 @@ function AddListButton() {
     );
 }
 
-interface CustomComponentProps {
-    "is-adding-list": string;
-}
+const StyledAddListButton = styled.div`
+    &.open-add-list {
+        #add-list-buttons {
+            display: none;
+        }
+        #add-list-container {
+            opacity: 1;
+        }
+    }
 
-const StyledAddListButton = styled.div<CustomComponentProps>`
     #add-list-buttons {
-        display: ${(props) =>
-            props["is-adding-list"] === "true" ? "none" : "block"};
+        display: block;
         background-color: #ffffff3d;
         min-width: 272px;
         padding: 12px 0px;
@@ -89,7 +93,7 @@ const StyledAddListButton = styled.div<CustomComponentProps>`
     }
 
     #add-list-container {
-        opacity: ${(props) => (props["is-adding-list"] === "true" ? "1" : "0")};
+        opacity: 0;
         padding: 8px;
 
         input {

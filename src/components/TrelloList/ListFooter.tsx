@@ -29,7 +29,7 @@ function ListFooter({ listId }: TrelloListProps) {
     };
 
     return (
-        <StyledListFooter is-adding-task={isAddingTask.toString()}>
+        <StyledListFooter className={isAddingTask ? "open-add-task" : ""}>
             <Button
                 type="ghost"
                 id="add-task-buttons"
@@ -76,16 +76,22 @@ function ListFooter({ listId }: TrelloListProps) {
     );
 }
 
-interface CustomComponentProps {
-    "is-adding-task": string;
-}
-
-const StyledListFooter = styled.div<CustomComponentProps>`
+const StyledListFooter = styled.div`
     padding: 8px;
 
+    &.open-add-task {
+        #add-task-buttons {
+            display: none;
+        }
+
+        #add-task-container {
+            opacity: 1;
+            position: unset;
+        }
+    }
+
     #add-task-buttons {
-        display: ${(props) =>
-            props["is-adding-task"] === "true" ? "none" : "flex"};
+        display: flex;
         align-items: center;
         height: fit-content;
         border-color: transparent;
@@ -100,9 +106,8 @@ const StyledListFooter = styled.div<CustomComponentProps>`
     }
 
     #add-task-container {
-        opacity: ${(props) => (props["is-adding-task"] === "true" ? "1" : "0")};
-        position: ${(props) =>
-            props["is-adding-task"] === "true" ? "unset" : "absolute"};
+        opacity: 0;
+        position: absolute;
 
         textarea {
             transition: none;
