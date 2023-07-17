@@ -21,7 +21,6 @@ export const reOrderInSameDroppableEl = (
     // Handle for dropPoistion top/bottom first
     if (dropPosition === "top") {
         for (let i = indexDragging; i > 0; i--) {
-            // if(i !== 0)
             swap(array, i, i - 1);
         }
         return;
@@ -31,7 +30,7 @@ export const reOrderInSameDroppableEl = (
         }
         return;
     }
-    console.log("HELLLO", indexDragging, indexSwap);
+
     if (indexDragging < indexSwap) {
         for (let i = indexDragging; i < indexSwap; i++) {
             if (i == indexSwap - 1 && dropPosition === "before") break;

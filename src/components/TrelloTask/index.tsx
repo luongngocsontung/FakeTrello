@@ -1,17 +1,37 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { trelloTaskTitle } from "../../features/Tasks/taskSlice";
 import { styled } from "styled-components";
 import { Button } from "antd";
 import { EditOutlined } from "@ant-design/icons";
+import { openTaskTitleModal } from "../../features/TrelloTaskTitleModal/TaskTitleModalSlice";
 
 export interface TrelloTaskProps {
     taskId: string;
+    listId: string;
 }
 
-function TrelloTask({ taskId }: TrelloTaskProps) {
+function TrelloTask({ taskId, listId }: TrelloTaskProps) {
+    const taskRef = useRef<HTMLDivElement>(null);
     const taskTitle = useAppSelector((state) => trelloTaskTitle(state, taskId));
     const dispatch = useAppDispatch();
+
+    const handleOpenTaskTitleModal = () => {
+        const taskHTML = taskRef.current;
+        if (!taskHTML) return;
+
+        const taskBoundingRect = taskHTML.getBoundingClientRect();
+        dispatch(
+            openTaskTitleModal({
+                listId,
+                taskId,
+                top: taskBoundingRect.top + "px",
+                left: taskBoundingRect.left + "px",
+                width: taskBoundingRect.width + "px",
+                isOpen: true,
+            })
+        );
+    };
 
     if (!taskTitle) return false;
 
@@ -20,11 +40,16 @@ function TrelloTask({ taskId }: TrelloTaskProps) {
             id="task-dnd"
             className="draggable drag-element"
             trello-id={taskId}
+            ref={taskRef}
         >
             <div id="trello-task">
                 <div id="task-container">
-                    {taskTitle}
-                    <Button id="edit-task" icon={<EditOutlined />} />
+                    <span>{taskTitle}</span>
+                    <Button
+                        onClick={handleOpenTaskTitleModal}
+                        id="edit-task"
+                        icon={<EditOutlined />}
+                    />
                 </div>
             </div>
         </StyledTrelloTask>
@@ -41,6 +66,7 @@ const StyledTrelloTask = styled.div`
     }
 
     #trello-task {
+        padding: 1px 0;
         border-radius: 8px;
         background-color: #22272b;
         font-weight: 400;
@@ -49,20 +75,22 @@ const StyledTrelloTask = styled.div`
         cursor: pointer;
 
         #task-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 2px 2px 2px 12px;
+            position: relative;
+            padding: 8px 8px 8px 12px;
 
             #edit-task {
+                transition: none;
+                position: absolute;
+                right: 2px;
+                top: 2px;
                 visibility: hidden;
-                background-color: transparent;
+                background-color: #282e3396;
                 border: none;
-                color: inherit;
+                color: #adadad;
             }
 
-            #edit-task :hover {
-                color: #4096ff;
+            #edit-task:hover {
+                background-color: #2c3439;
             }
         }
     }

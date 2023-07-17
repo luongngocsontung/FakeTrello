@@ -16,7 +16,7 @@ function ListBody({ listId }: TrelloListProps) {
     return (
         <StyledListBody id="list-body" className="droppable">
             {listTasksId.map((id) => {
-                return <TrelloTask key={id} taskId={id} />;
+                return <TrelloTask key={id} taskId={id} listId={listId} />;
             })}
         </StyledListBody>
     );

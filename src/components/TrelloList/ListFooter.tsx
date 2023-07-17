@@ -1,17 +1,18 @@
 import React, { useRef, useState } from "react";
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Input, InputRef } from "antd";
+import { Button, Input } from "antd";
 import { styled } from "styled-components";
 import { TrelloListProps } from ".";
 import { useAppDispatch } from "../../app/hooks";
 import { addTask } from "../../features/Tasks/taskSlice";
 import { getNewId } from "../../utils/functions";
+import { TextAreaRef } from "antd/es/input/TextArea";
 const { TextArea } = Input;
 
 function ListFooter({ listId }: TrelloListProps) {
     const [isAddingTask, setIsAddingTask] = useState(false);
     const [title, setTitle] = useState("");
-    const titleRef = useRef<InputRef>(null);
+    const titleRef = useRef<TextAreaRef>(null);
 
     const dispatch = useAppDispatch();
 
@@ -125,9 +126,6 @@ const StyledListFooter = styled.div<CustomComponentProps>`
             #confirm-add-task {
                 color: #1d2125;
                 font-weight: 400;
-            }
-
-            button {
                 transition: none;
             }
         }
