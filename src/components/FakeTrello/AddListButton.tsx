@@ -94,6 +94,12 @@ const StyledAddListButton = styled.div<CustomComponentProps>`
 
         input {
             transition: none;
+            background-color: #22272b;
+            color: white;
+
+            &::placeholder {
+                color: #ffffffbd;
+            }
         }
 
         #add-list-buttons:hover {
