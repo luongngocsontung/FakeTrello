@@ -5,12 +5,13 @@ import {
     TaskTitleModal,
     closeTaskTitleModal,
 } from "../../features/TrelloTaskTitleModal/TaskTitleModalSlice";
-import { Button, Input } from "antd";
+import { Button, Input, Tag } from "antd";
 import {
     changeTaskTitle,
     trelloTaskTitle,
 } from "../../features/Tasks/taskSlice";
 import { TextAreaRef } from "antd/es/input/TextArea";
+import { DeleteOutlined } from "@ant-design/icons";
 const { TextArea } = Input;
 
 function TrelloTaskTitleModal() {
@@ -45,24 +46,34 @@ function TrelloTaskTitleModal() {
         if (isOpen) {
             const quickCard = quickCardRef.current;
             if (!quickCard) return;
+            const boundingRectQuickCard = quickCard.getBoundingClientRect();
 
             quickCard.style.left = left;
-            quickCard.style.top = top;
             quickCard.style.width = width;
+            if (
+                parseFloat(top) + boundingRectQuickCard.height >
+                window.innerHeight
+            ) {
+                quickCard.style.bottom = "25px";
+                quickCard.style.top = "";
+            } else {
+                quickCard.style.top = top;
+                quickCard.style.bottom = "";
+            }
         }
     }, [isOpen]);
 
     // Update textarea value
     useEffect(() => {
         setTitle(taskTitle || "");
-        titleRef.current?.resizableTextArea?.textArea.select();
+        titleRef.current?.focus();
     }, [taskTitle]);
 
     return (
         <StyledTrelloTaskTitleModal
             id="task-title-modal"
+            className={isOpen ? "modal-open" : ""}
             onClick={handleOnClickModal}
-            is-open={isOpen.toString()}
         >
             <div ref={quickCardRef} id="quick-card-editor-task">
                 <TextArea
@@ -83,16 +94,21 @@ function TrelloTaskTitleModal() {
                 >
                     Save
                 </Button>
+                <div id="quick-card-buttons">
+                    <Tag
+                        icon={<DeleteOutlined />}
+                        bordered={false}
+                        className="action-buttons"
+                    >
+                        <span>Delete</span>
+                    </Tag>
+                </div>
             </div>
         </StyledTrelloTaskTitleModal>
     );
 }
 
-interface CustomDivProps {
-    "is-open": string;
-}
-
-const StyledTrelloTaskTitleModal = styled.div<CustomDivProps>`
+const StyledTrelloTaskTitleModal = styled.div`
     bottom: 0;
     left: 0;
     position: fixed;
@@ -100,7 +116,7 @@ const StyledTrelloTaskTitleModal = styled.div<CustomDivProps>`
     top: 0;
     z-index: 10;
     background-color: #0009;
-    display: ${(props) => (props["is-open"] === "true" ? "block" : "none")};
+    transform: translateX(100%);
 
     #quick-card-editor-task {
         position: absolute;
@@ -116,6 +132,45 @@ const StyledTrelloTaskTitleModal = styled.div<CustomDivProps>`
             margin-top: 8px;
             color: #1d2125;
             font-weight: 400;
+        }
+
+        #quick-card-buttons {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 85ms ease-in, transform 85ms ease-in;
+            width: 240px;
+
+            .action-buttons {
+                background: #0009;
+                border-radius: 3px;
+                clear: both;
+                color: #c7d1db;
+                display: block;
+                float: left;
+                margin: 0 0 4px 8px;
+                padding: 6px 12px 6px 10px;
+                transition: transform 85ms ease-in;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+
+                &:hover {
+                    transform: translateX(5px);
+                }
+            }
+        }
+    }
+
+    &.modal-open {
+        transform: translateX(0);
+        #quick-card-editor-task {
+            #quick-card-buttons {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
     }
 `;
