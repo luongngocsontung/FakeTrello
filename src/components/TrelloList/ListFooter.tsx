@@ -6,6 +6,7 @@ import { TrelloListProps } from ".";
 import { useAppDispatch } from "../../app/hooks";
 import { addTask } from "../../features/Tasks/taskSlice";
 import { getNewId } from "../../utils/functions";
+const { TextArea } = Input;
 
 function ListFooter({ listId }: TrelloListProps) {
     const [isAddingTask, setIsAddingTask] = useState(false);
@@ -41,15 +42,16 @@ function ListFooter({ listId }: TrelloListProps) {
             </Button>
 
             <div id="add-task-container">
-                <Input
+                <TextArea
+                    placeholder="Enter a title for this task..."
+                    bordered={false}
+                    autoSize={{ minRows: 3 }}
                     ref={titleRef}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Enter task title..."
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            handleAddNewTask();
-                        }
+                    onPressEnter={(e) => {
+                        e.preventDefault();
+                        handleAddNewTask();
                     }}
                 />
                 <div id="confirm-actions" className="mt-8">
@@ -101,8 +103,14 @@ const StyledListFooter = styled.div<CustomComponentProps>`
         position: ${(props) =>
             props["is-adding-task"] === "true" ? "unset" : "absolute"};
 
-        input {
+        textarea {
             transition: none;
+            background-color: #22272b;
+            color: white;
+
+            &::placeholder {
+                color: #ffffffbd;
+            }
         }
 
         #add-task-buttons:hover {
