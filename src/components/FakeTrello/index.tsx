@@ -12,10 +12,8 @@ function FakeTrello() {
         const data: any = {};
         localKeys.forEach((key) => {
             data[key] = JSON.parse(localStorage.getItem(key) || "");
-            console.log(localStorage.getItem(key));
         });
         const jsonData = JSON.stringify(data, null, 2);
-        // const jsonData = JSON.stringify(localStorage, null, 2);
         const blob = new Blob([jsonData], {
             type: "application/json",
         });
