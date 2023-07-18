@@ -7,7 +7,7 @@ let draggingElement: HTMLDivElement | null = null;
 let placeHolderElement: HTMLDivElement | null = null;
 let cloneDraggingElement: HTMLDivElement | null = null;
 let clickedElement: HTMLElement | null = null;
-let touchedElement: HTMLDivElement | null | undefined = null;
+let touchedElement: HTMLDivElement | null | undefined | Element = null;
 let dropPoistion: string = "";
 let shiftX = 0;
 let shiftY = 0;
@@ -53,6 +53,7 @@ function useDragAndDrop() {
     };
 
     const handleOnMouseMove = (e: MouseEvent) => {
+        e.preventDefault();
         if (!draggingElement) return;
         if (!isMoving) {
             // Start moving when mouse's position move away from mouseDown's position greater than 5
@@ -73,6 +74,7 @@ function useDragAndDrop() {
                 cloneDraggingElement.style.height =
                     draggingElement.offsetHeight + "px";
                 cloneDraggingElement.style.rotate = "4deg";
+                cloneDraggingElement.style.pointerEvents = "none";
 
                 // append to body
                 document.body.append(cloneDraggingElement);
@@ -97,22 +99,13 @@ function useDragAndDrop() {
             if (!cloneDraggingElement || !placeHolderElement) return;
             // Start moving clone Element
             moveAt(e.pageX, e.pageY);
-
             // Get touched Element
-            cloneDraggingElement.hidden = true;
-            const mouseTouchedElement: HTMLDivElement | undefined | null =
-                document
-                    .elementFromPoint(e.clientX, e.clientY)
-                    ?.closest(`.drag-element#${draggingElement.id}`);
-            cloneDraggingElement.hidden = false;
+            const mouseTouchedElement: Element | undefined | null = (
+                e.target as HTMLElement
+            )?.closest(`.drag-element#${draggingElement.id}`);
             // Handle for DND task to another List
             if (!mouseTouchedElement && draggingElement.id === "task-dnd") {
-                cloneDraggingElement.hidden = true;
-                const elementBelow = document.elementFromPoint(
-                    e.clientX,
-                    e.clientY
-                );
-                cloneDraggingElement.hidden = false;
+                const elementBelow = e.target as HTMLElement;
                 // If still inside droppable task then do not thing
                 if (elementBelow?.closest(".droppable#list-body")) return;
                 // Get task droppable list (tasks container) and append/prepend task
