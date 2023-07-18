@@ -12,9 +12,13 @@ export interface ListState {
     tasksId: string[];
 }
 
-const initialState: ListState[] = JSON.parse(
-    localStorage.getItem("trelloLists") || "[]"
-);
+export interface ListSliceState {
+    lists: ListState[];
+}
+
+const initialState: ListSliceState = {
+    lists: JSON.parse(localStorage.getItem("trelloLists") || "{}")?.lists,
+};
 
 export const ListsSlice = createSlice({
     name: "lists",
@@ -24,7 +28,7 @@ export const ListsSlice = createSlice({
             state,
             list: PayloadAction<{ id: string; title: string }>
         ) => {
-            state.push({
+            state.lists.push({
                 id: list.payload.id,
                 title: list.payload.title,
                 tasksId: [],
@@ -35,7 +39,7 @@ export const ListsSlice = createSlice({
             state,
             changes: PayloadAction<{ listId: string; newTitle: string }>
         ) => {
-            const trelloList = state.find(
+            const trelloList = state.lists.find(
                 (list) => list.id === changes.payload.listId
             );
             if (!trelloList) return;
@@ -61,11 +65,11 @@ export const ListsSlice = createSlice({
                 taskDropListId,
             } = changes.payload;
 
-            const taskDraggingList = state.find(
+            const taskDraggingList = state.lists.find(
                 (list) => list.id === taskDraggingListId
             )!;
             const indexDragging = taskDraggingList.tasksId.indexOf(draggingId);
-            const taskDropList = state.find(
+            const taskDropList = state.lists.find(
                 (list) => list.id === taskDropListId
             )!;
             const indexSwap = taskDropList.tasksId.indexOf(touchedId || "");
@@ -94,7 +98,7 @@ export const ListsSlice = createSlice({
     extraReducers(builder) {
         // Add new Task Id to a list
         builder.addCase(addTask, (state, action) => {
-            const list = state.find(
+            const list = state.lists.find(
                 (list) => list.id === action.payload.listId
             );
             if (!list) return;
@@ -105,7 +109,7 @@ export const ListsSlice = createSlice({
         // Remove Task Id from its list
         builder.addCase(deleteTask, (state, action) => {
             const { listId, taskId } = action.payload;
-            const list = state.find((list) => list.id === listId);
+            const list = state.lists.find((list) => list.id === listId);
             if (!list) return;
 
             list.tasksId = list?.tasksId.filter((id) => id !== taskId);
@@ -114,10 +118,10 @@ export const ListsSlice = createSlice({
 });
 
 export const trelloListTasksId = (state: RootState, listId: string) =>
-    state.lists.find((list) => list.id === listId)?.tasksId;
+    state.trelloLists.lists.find((list) => list.id === listId)?.tasksId;
 
 export const trelloListTitle = (state: RootState, listId: string) =>
-    state.lists.find((list) => list.id === listId)?.title;
+    state.trelloLists.lists.find((list) => list.id === listId)?.title;
 
 export const { addList, changeListTitle, reOrderTask } = ListsSlice.actions;
 

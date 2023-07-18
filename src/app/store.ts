@@ -7,8 +7,8 @@ import taskTitleModalReducer from "../features/TrelloTaskTitleModal/TaskTitleMod
 export const store = configureStore({
     reducer: {
         trello: trelloReducer,
-        lists: listsReducer,
-        tasks: taskReducer,
+        trelloLists: listsReducer,
+        trelloTasks: taskReducer,
         taskTitleModal: taskTitleModalReducer,
     },
 });
