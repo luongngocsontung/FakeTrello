@@ -1,7 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
+import { reOrderTask, removeList } from "../Lists/listsSlice";
 
 export interface TaskState {
+    listId: string;
     id: string;
     title: string;
 }
@@ -23,6 +25,7 @@ export const TasksSlice = createSlice({
             params: PayloadAction<{ listId: string; id: string; title: string }>
         ) => {
             state.tasks.push({
+                listId: params.payload.listId,
                 id: params.payload.id,
                 title: params.payload.title,
             });
@@ -47,6 +50,22 @@ export const TasksSlice = createSlice({
             const { taskId } = params.payload;
             state.tasks = state.tasks.filter((task) => task.id !== taskId);
         },
+    },
+    extraReducers(builder) {
+        // Update listId if Task was dragged to another List
+        builder.addCase(reOrderTask, (state, actions) => {
+            const { taskDropListId, draggingId } = actions.payload;
+            const task = state.tasks.find((task) => task.id === draggingId);
+            if (!task) return;
+
+            task.listId = taskDropListId;
+        });
+
+        // Delete Task inside deleted List
+        builder.addCase(removeList, (state, actions) => {
+            const listId = actions.payload;
+            state.tasks = state.tasks.filter((task) => task.listId !== listId);
+        });
     },
 });
 

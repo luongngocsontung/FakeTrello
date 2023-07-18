@@ -24,6 +24,14 @@
     padding-bottom: 8px;
 }
 
+.ant-dropdown-menu {
+    background-color: #22272b !important;
+    box-shadow: inset 0px 0px 0px 1px #BCD6F01F, 0px 8px 12px #0304045C, 0px 0px 1px #03040480 !important;
+    & li {
+        color: white !important;
+    }
+}
+
 #fake-trello.no-hover{
     .draggable > div {
         pointer-events: none;

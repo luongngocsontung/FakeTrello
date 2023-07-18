@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { addList } from "../Lists/listsSlice";
+import { addList, removeList } from "../Lists/listsSlice";
 import { reOrderInSameDroppableEl, swap } from "../../utils/functions";
 
 export interface TrelloState {
@@ -48,8 +48,16 @@ export const trelloSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
+        // Add List Id if a list was added
         builder.addCase(addList, (state, action) => {
             handleAddListId(state, action.payload.id);
+        });
+
+        // Remove List Id if a list was removed
+        builder.addCase(removeList, (state, action) => {
+            state.listsId = state.listsId.filter(
+                (listId) => listId !== action.payload
+            );
         });
     },
 });

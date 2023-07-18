@@ -3,15 +3,30 @@ import { styled } from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
     changeListTitle,
+    removeList,
     trelloListTitle,
 } from "../../features/Lists/listsSlice";
 import { TrelloListProps } from ".";
-import { EllipsisOutlined } from "@ant-design/icons";
+import { EllipsisOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Dropdown, MenuProps } from "antd";
 
 function ListHeader({ listId }: TrelloListProps) {
     const listTitle = useAppSelector((state) => trelloListTitle(state, listId));
     const dispatch = useAppDispatch();
     const [title, setTitle] = useState(listTitle);
+
+    const handleRemoveList = () => {
+        dispatch(removeList(listId));
+    };
+
+    const items: MenuProps["items"] = [
+        {
+            key: "0",
+            label: "Remove List",
+            icon: <DeleteOutlined />,
+            onClick: handleRemoveList,
+        },
+    ];
 
     const handleChangeListTitle = (
         e: React.FocusEvent<HTMLInputElement, Element>
@@ -39,7 +54,10 @@ function ListHeader({ listId }: TrelloListProps) {
                 onBlur={handleChangeListTitle}
                 onFocus={(e) => e.currentTarget.setAttribute("isFocus", "true")}
             />
-            <EllipsisOutlined style={{ fontSize: 21 }} />
+
+            <Dropdown menu={{ items }} trigger={["click"]}>
+                <EllipsisOutlined style={{ fontSize: 21 }} />
+            </Dropdown>
         </StyledListHeader>
     );
 }

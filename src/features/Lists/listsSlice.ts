@@ -47,6 +47,12 @@ export const ListsSlice = createSlice({
             trelloList.title = changes.payload.newTitle;
         },
 
+        removeList: (state, listId: PayloadAction<string>) => {
+            state.lists = state.lists.filter(
+                (list) => list.id !== listId.payload
+            );
+        },
+
         reOrderTask: (
             state,
             changes: PayloadAction<{
@@ -123,6 +129,7 @@ export const trelloListTasksId = (state: RootState, listId: string) =>
 export const trelloListTitle = (state: RootState, listId: string) =>
     state.trelloLists.lists.find((list) => list.id === listId)?.title;
 
-export const { addList, changeListTitle, reOrderTask } = ListsSlice.actions;
+export const { addList, changeListTitle, removeList, reOrderTask } =
+    ListsSlice.actions;
 
 export default ListsSlice.reducer;
