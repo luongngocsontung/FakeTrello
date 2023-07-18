@@ -133,6 +133,8 @@ const StyledTrelloTaskTitleModal = styled.div`
             color: white;
             box-shadow: inset 0px 0px 0px 1px #00000000, 0px 1px 1px #03040480,
                 0px 0px 1px #03040480;
+            padding: 8px 8px 8px 12px;
+            line-height: 20px;
         }
 
         #confirm-change-task-title {
