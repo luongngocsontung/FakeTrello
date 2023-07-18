@@ -23,7 +23,7 @@ function FakeTrello() {
     };
 
     return (
-        <StyledFakeTrello>
+        <StyledFakeTrello id="fake-trello">
             <div id="title">
                 <span>Fake Trello</span>
                 <Button href={getDataHref()} download={"data.json"}>

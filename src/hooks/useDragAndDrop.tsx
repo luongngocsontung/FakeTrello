@@ -75,6 +75,9 @@ function useDragAndDrop() {
                     draggingElement.offsetHeight + "px";
                 cloneDraggingElement.style.rotate = "4deg";
                 cloneDraggingElement.style.pointerEvents = "none";
+                document
+                    .getElementById("fake-trello")
+                    ?.classList.add("no-hover");
 
                 // append to body
                 document.body.append(cloneDraggingElement);
@@ -230,6 +233,7 @@ function useDragAndDrop() {
         }
         document.removeEventListener("mousemove", handleOnMouseMove);
         // Clean up
+        document.getElementById("fake-trello")?.classList.remove("no-hover");
         draggingElement.hidden = false;
         draggingElement = null;
         cloneDraggingElement?.remove();

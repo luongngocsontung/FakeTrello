@@ -23,3 +23,21 @@
 .pb-8 {
     padding-bottom: 8px;
 }
+
+#fake-trello.no-hover{
+    .draggable > div {
+        pointer-events: none;
+    }
+
+    #list-footer > * {
+        pointer-events: none;
+    }
+
+    #title > * {
+        pointer-events: none;
+    }
+
+    #add-list > * {
+        pointer-events: none;
+    }
+}

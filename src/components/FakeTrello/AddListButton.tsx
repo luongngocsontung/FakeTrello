@@ -26,7 +26,10 @@ function AddListButton() {
     };
 
     return (
-        <StyledAddListButton className={isAddingList ? "open-add-list" : ""}>
+        <StyledAddListButton
+            id="add-list"
+            className={isAddingList ? "open-add-list" : ""}
+        >
             <Button
                 onClick={() => {
                     setIsAddingList(true);

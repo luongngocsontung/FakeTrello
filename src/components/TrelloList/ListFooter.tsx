@@ -29,7 +29,10 @@ function ListFooter({ listId }: TrelloListProps) {
     };
 
     return (
-        <StyledListFooter className={isAddingTask ? "open-add-task" : ""}>
+        <StyledListFooter
+            id="list-footer"
+            className={isAddingTask ? "open-add-task" : ""}
+        >
             <Button
                 type="ghost"
                 id="add-task-buttons"
