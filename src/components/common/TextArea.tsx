@@ -12,9 +12,9 @@ interface TextAreaProps
 const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
     (props, ref) => {
         const localRef = useRef<HTMLTextAreaElement>(null);
-        const { onPressEnter, ...restProps } = props;
         const textareaRef =
             ref instanceof Function ? localRef : ref || localRef;
+        const { onPressEnter, ...restProps } = props;
 
         const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
             if (props.onChange) props.onChange(e);
@@ -60,6 +60,7 @@ const StyledTextArea = styled.textarea`
     line-height: 20px;
     font-family: inherit;
     box-sizing: border-box;
+    white-space: break-spaces;
 `;
 
 export default TextArea;

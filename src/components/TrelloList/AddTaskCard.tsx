@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { getNewId } from "../../utils/functions";
+import { getNewId, scrollToEdge } from "../../utils/functions";
 import { addTask } from "../../features/Tasks/taskSlice";
 import { Button } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
@@ -14,7 +14,13 @@ function AddTaskCard({ listId }: { listId: string }) {
     const isOpen = useAppSelector((state) => isOpenAddTask(state, listId));
     const dispatch = useAppDispatch();
 
-    const handleAddNewTask = () => {
+    const scrollToBottom = () => {
+        const taskContainer = componentRef.current?.closest("#list-body");
+        if (!taskContainer) return;
+        scrollToEdge(taskContainer, "bottom");
+    };
+
+    const handleAddNewTask = async () => {
         const taskTitle = titleRef.current?.value;
         if (!taskTitle) return;
 
@@ -23,14 +29,18 @@ function AddTaskCard({ listId }: { listId: string }) {
             id: getNewId(),
             title: taskTitle,
         };
-        dispatch(addTask(newTask));
+        await dispatch(addTask(newTask));
         titleRef.current.value = "";
         titleRef.current.style.height = "auto";
+
+        scrollToBottom();
     };
 
     useEffect(() => {
         if (!isOpen) return;
 
+        // Focus input field when add task card open
+        titleRef.current?.focus();
         const handleClickOutside = (event: MouseEvent) => {
             if (
                 componentRef.current &&
@@ -38,30 +48,24 @@ function AddTaskCard({ listId }: { listId: string }) {
             ) {
                 // User clicked outside the component
                 dispatch(closeAddTask(listId));
+                handleAddNewTask();
             }
         };
         // Add event listener to detect clicks outside the component
         setTimeout(() => {
-            document.addEventListener("click", handleClickOutside);
+            document.addEventListener("mousedown", handleClickOutside);
         }, 1);
         // Clean up the event listener when the component unmounts
         return () => {
-            document.removeEventListener("click", handleClickOutside);
+            document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [isOpen]);
-
-    // Focus input field
-    useEffect(() => {
-        if (isOpen) titleRef.current?.focus();
-    }, [isOpen]);
-
-    if (!isOpen) return false;
 
     return (
         <StyledAddTaskCard
             id="add-task-container"
-            className="mb-8"
             ref={componentRef}
+            style={{ display: isOpen ? "block" : "none" }}
         >
             <TextArea
                 ref={titleRef}
@@ -84,6 +88,8 @@ function AddTaskCard({ listId }: { listId: string }) {
                     style={{ fontSize: 21 }}
                     onClick={() => {
                         dispatch(closeAddTask(listId));
+                        if (!titleRef.current) return;
+                        titleRef.current.value = "";
                     }}
                 />
             </div>
@@ -106,10 +112,6 @@ const StyledAddTaskCard = styled.div`
             border: none;
             box-shadow: none;
         }
-    }
-
-    #add-task-buttons:hover {
-        background-color: #a6c5e229;
     }
 
     #confirm-actions {

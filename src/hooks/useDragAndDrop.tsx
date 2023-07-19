@@ -14,6 +14,7 @@ let shiftY = 0;
 let mouseClientX = 0;
 let mouseClientY = 0;
 let isMoving = false;
+let droppableContainer: Element | null = null;
 
 function useDragAndDrop() {
     const dispatch = useAppDispatch();
@@ -22,6 +23,17 @@ function useDragAndDrop() {
     const moveAt = (pageX: number, pageY: number) => {
         cloneDraggingElement!.style.left = pageX - shiftX + "px";
         cloneDraggingElement!.style.top = pageY - shiftY + "px";
+        // if (!droppableContainer) return;
+        // // Scroll on Edge
+        // if (draggingElement?.id === "list-dnd") {
+        //     if (window.innerWidth - pageX < 100) {
+        //         const scrollGap = 10 + droppableContainer.scrollLeft;
+        //         droppableContainer.scrollTo({
+        //             left: scrollGap,
+        //             behavior: "smooth",
+        //         });
+        //     }
+        // }
     };
 
     const handleOnMouseDown = (e: MouseEvent) => {
@@ -97,6 +109,7 @@ function useDragAndDrop() {
                 // add placeholder right before dragging element
                 const droppableEl = draggingElement.closest(".droppable");
                 droppableEl?.insertBefore(placeHolderElement, draggingElement);
+                droppableContainer = droppableEl;
             }
         } else {
             if (!cloneDraggingElement || !placeHolderElement) return;

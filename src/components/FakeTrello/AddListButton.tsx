@@ -1,51 +1,95 @@
-import React, { useRef, useState } from "react";
-import { Button, Input, InputRef } from "antd";
-import { useAppDispatch } from "../../app/hooks";
+import React, { useEffect, useRef, useState } from "react";
+import { Button } from "antd";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { addList } from "../../features/Lists/listsSlice";
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import { styled } from "styled-components";
 import { StyledCard } from ".";
-import { getNewId } from "../../utils/functions";
+import { getNewId, scrollToEdge } from "../../utils/functions";
+import Input from "../common/Input";
+import {
+    closeAddTask,
+    isOpenAddTask,
+    openAddTask,
+} from "../../features/Utils/utilsSlice";
+
+const ADD_LIST_ID = "add-list";
 
 function AddListButton() {
-    const [isAddingList, setIsAddingList] = useState(false);
-    const [title, setTitle] = useState("");
-    const titleRef = useRef<InputRef>(null);
-
+    const titleRef = useRef<HTMLInputElement>(null);
+    const componentRef = useRef<HTMLDivElement>(null);
+    const isOpenAddList = useAppSelector((state) =>
+        isOpenAddTask(state, ADD_LIST_ID)
+    );
     const dispatch = useAppDispatch();
 
-    const handleAddNewList = () => {
-        if (!title) return;
+    const scrollToRight = () => {
+        const listContainer = componentRef.current?.closest("#lists-container");
+        if (!listContainer) return;
+
+        scrollToEdge(listContainer, "right");
+    };
+
+    const handleAddNewList = async () => {
+        const listTitle = titleRef.current?.value;
+        if (!listTitle) return;
 
         const newList = {
             id: getNewId(),
-            title: title,
+            title: listTitle,
         };
-        dispatch(addList(newList));
-        setTitle("");
+        // Set await so listContainer will wait till has new list and then scroll
+        await dispatch(addList(newList));
+        titleRef.current.value = "";
+
+        scrollToRight();
     };
 
+    useEffect(() => {
+        if (!isOpenAddList) return;
+
+        // Focus input when add list card open
+        titleRef.current?.focus();
+
+        const handleClickOutside = (e: MouseEvent) => {
+            if (
+                componentRef.current &&
+                !componentRef.current.contains(e.target as Node)
+            ) {
+                // User clicked outside the component
+                dispatch(closeAddTask(ADD_LIST_ID));
+            }
+        };
+        setTimeout(() => {
+            document.addEventListener("mousedown", handleClickOutside);
+        }, 1);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isOpenAddList]);
+
     return (
-        <StyledAddListButton
-            id="add-list"
-            className={isAddingList ? "open-add-list" : ""}
-        >
+        <StyledAddListButton id="add-list">
             <Button
-                onClick={() => {
-                    setIsAddingList(true);
-                    titleRef.current?.focus();
+                onClick={async () => {
+                    await dispatch(openAddTask(ADD_LIST_ID));
+                    scrollToRight();
                 }}
                 icon={<PlusOutlined />}
                 id="add-list-buttons"
+                style={{ display: isOpenAddList ? "none" : "block" }}
             >
                 Add another list
             </Button>
 
-            <StyledCard id="add-list-container">
+            <StyledCard
+                id="add-list-container"
+                style={{ display: isOpenAddList ? "block" : "none" }}
+                ref={componentRef}
+            >
                 <Input
                     ref={titleRef}
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
                     placeholder="Enter list title..."
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
@@ -64,8 +108,7 @@ function AddListButton() {
                     <CloseOutlined
                         style={{ fontSize: 21 }}
                         onClick={() => {
-                            setIsAddingList(false);
-                            setTitle("");
+                            dispatch(closeAddTask(ADD_LIST_ID));
                         }}
                     />
                 </div>
@@ -75,15 +118,6 @@ function AddListButton() {
 }
 
 const StyledAddListButton = styled.div`
-    &.open-add-list {
-        #add-list-buttons {
-            display: none;
-        }
-        #add-list-container {
-            opacity: 1;
-        }
-    }
-
     #add-list-buttons {
         display: block;
         background-color: #ffffff3d;
@@ -100,11 +134,9 @@ const StyledAddListButton = styled.div`
     }
 
     #add-list-container {
-        opacity: 0;
         padding: 8px;
 
         input {
-            transition: none;
             background-color: #22272b;
             color: white;
 

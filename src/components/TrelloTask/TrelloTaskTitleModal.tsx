@@ -5,24 +5,22 @@ import {
     TaskTitleModal,
     closeTaskTitleModal,
 } from "../../features/TrelloTaskTitleModal/TaskTitleModalSlice";
-import { Button, Input, Tag } from "antd";
+import { Button, Tag } from "antd";
 import {
     changeTaskTitle,
     deleteTask,
     trelloTaskTitle,
 } from "../../features/Tasks/taskSlice";
-import { TextAreaRef } from "antd/es/input/TextArea";
 import { DeleteOutlined } from "@ant-design/icons";
-const { TextArea } = Input;
+import TextArea from "../common/TextArea";
 
 function TrelloTaskTitleModal() {
     const quickCardRef = useRef<HTMLDivElement>(null);
-    const titleRef = useRef<TextAreaRef>(null);
+    const titleRef = useRef<HTMLTextAreaElement>(null);
     const { listId, taskId, top, left, width, isOpen } =
         useAppSelector(TaskTitleModal);
     const taskTitle = useAppSelector((state) => trelloTaskTitle(state, taskId));
     const dispatch = useAppDispatch();
-    const [title, setTitle] = useState(taskTitle);
 
     const closeModal = () => {
         dispatch(closeTaskTitleModal());
@@ -36,9 +34,10 @@ function TrelloTaskTitleModal() {
     };
 
     const handleChangeTaskTitle = () => {
-        if (!title) return;
+        const taskTitle = titleRef.current?.value;
+        if (!taskTitle) return;
 
-        dispatch(changeTaskTitle({ id: taskId, newTitle: title }));
+        dispatch(changeTaskTitle({ id: taskId, newTitle: taskTitle }));
         closeModal();
     };
 
@@ -66,14 +65,25 @@ function TrelloTaskTitleModal() {
                 quickCard.style.top = top;
                 quickCard.style.bottom = "";
             }
+            // Update attribute for textarea and select all the text
+            const textarea = titleRef.current;
+            if (!textarea) return;
+
+            textarea.value = taskTitle || "";
+            textarea.style.height = "auto";
+            textarea.style.height = textarea.scrollHeight + "px";
+            textarea.select();
         }
     }, [isOpen]);
 
     // Update textarea value
-    useEffect(() => {
-        setTitle(taskTitle || "");
-        titleRef.current?.focus();
-    }, [taskTitle]);
+    // useEffect(() => {
+    //     const textarea = titleRef.current;
+    //     if (!textarea) return;
+
+    //     textarea.value = taskTitle;
+    //     textarea.style.height = "auto";
+    // }, [taskTitle]);
 
     return (
         <StyledTrelloTaskTitleModal
@@ -83,11 +93,8 @@ function TrelloTaskTitleModal() {
         >
             <div ref={quickCardRef} id="quick-card-editor-task">
                 <TextArea
-                    bordered={false}
-                    autoSize={{ minRows: 4 }}
+                    rows={4}
                     ref={titleRef}
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
                     onPressEnter={(e) => {
                         e.preventDefault();
                         handleChangeTaskTitle();

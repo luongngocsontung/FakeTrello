@@ -30,7 +30,7 @@ const StyledListBody = styled.div`
     overflow-x: hidden;
     overflow-y: auto;
     gap: 7px;
-    margin: 0 4px;
+    margin: 0 4px 8px 4px;
     padding: 0 4px;
 
     /* Style for scroll bar */

@@ -4,7 +4,8 @@
       "TueJul11202323:34:20GMT+0700(IndochinaTime)",
       "TueJul11202323:35:02GMT+0700(IndochinaTime)",
       "TueJul11202323:35:11GMT+0700(IndochinaTime)",
-      "TueJul11202323:35:13GMT+0700(IndochinaTime)"
+      "TueJul11202323:35:13GMT+0700(IndochinaTime)",
+      "lk954qwsblaouq91ww"
     ]
   },
   "trelloLists": {
@@ -14,22 +15,15 @@
         "title": "To Do",
         "tasksId": [
           "lk6sosww1fwixqykmm",
-          "lk7wqw6mlk01q1nc6s",
-          "lk5pi6d6675r4amia5",
-          "lk5pcchgmepg4l65zi",
           "lk5pdr7o57cfua803c",
-          "lk5ph15ykdkv6kevqn",
-          "lk6ogtyched6f6tbo7",
-          "lk7wqozq42zi8xmu79",
-          "lk8ed1ukfv50a5fiid"
+          "lk5ph15ykdkv6kevqn"
         ]
       },
       {
         "id": "TueJul11202323:35:02GMT+0700(IndochinaTime)",
         "title": "WIP",
         "tasksId": [
-          "TueJul11202323:35:32GMT+0700(IndochinaTime)",
-          "lk5pckqta39wx1r4mq"
+          "TueJul11202323:35:32GMT+0700(IndochinaTime)"
         ]
       },
       {
@@ -41,6 +35,16 @@
         "id": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
         "title": "Done",
         "tasksId": [
+          "lk6ogtyched6f6tbo7",
+          "lk5pi6d6675r4amia5",
+          "lk5pcchgmepg4l65zi",
+          "lk9c6moigu55zg46c1",
+          "lk7wqozq42zi8xmu79",
+          "lk9813sbi35pcthcd2",
+          "lk982ajxfswpbmo2i0",
+          "lk7wqw6mlk01q1nc6s",
+          "lk8ed1ukfv50a5fiid",
+          "lk5pckqta39wx1r4mq",
           "lk8fwchupsg9labcxu",
           "lk86ley8go81wq8go3",
           "lk5pcoi5389rbg4w68",
@@ -53,6 +57,11 @@
           "lk5p15shiw7kfvjaok",
           "lk5rzsvl6xxpid9q8t"
         ]
+      },
+      {
+        "id": "lk954qwsblaouq91ww",
+        "title": "Trash",
+        "tasksId": []
       }
     ]
   },
@@ -87,12 +96,12 @@
       {
         "id": "lk5pcchgmepg4l65zi",
         "title": "When Click onBlur then adding task/list Box should be closed ",
-        "listId": "TueJul11202323:34:20GMT+0700(IndochinaTime)"
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)"
       },
       {
         "id": "lk5pckqta39wx1r4mq",
         "title": "Add Delete List",
-        "listId": "TueJul11202323:35:02GMT+0700(IndochinaTime)"
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)"
       },
       {
         "id": "lk5pcoi5389rbg4w68",
@@ -117,7 +126,7 @@
       {
         "id": "lk5pi6d6675r4amia5",
         "title": "When add new task/list, page should scroll to corresponding direction to show the new list/task",
-        "listId": "TueJul11202323:34:20GMT+0700(IndochinaTime)"
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)"
       },
       {
         "id": "lk5pkmhwk7a0bmozv1",
@@ -142,7 +151,7 @@
       {
         "id": "lk6ogtyched6f6tbo7",
         "title": "Select TextArea when open TaskTitleModal",
-        "listId": "TueJul11202323:34:20GMT+0700(IndochinaTime)"
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)"
       },
       {
         "id": "lk6ownwxtjbcpr1up2",
@@ -162,12 +171,12 @@
       {
         "id": "lk7wqozq42zi8xmu79",
         "title": "Write Input Component",
-        "listId": "TueJul11202323:34:20GMT+0700(IndochinaTime)"
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)"
       },
       {
         "id": "lk7wqw6mlk01q1nc6s",
         "title": "Write TextArea Component",
-        "listId": "TueJul11202323:34:20GMT+0700(IndochinaTime)"
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)"
       },
       {
         "id": "lk86ley8go81wq8go3",
@@ -177,12 +186,27 @@
       {
         "id": "lk8ed1ukfv50a5fiid",
         "title": "Add hover effect for Add List Button",
-        "listId": "TueJul11202323:34:20GMT+0700(IndochinaTime)"
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)"
       },
       {
         "id": "lk8fwchupsg9labcxu",
         "title": "Remove hover effect when dragging",
         "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)"
+      },
+      {
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
+        "id": "lk9813sbi35pcthcd2",
+        "title": "Move AddTaskCard to ListBody"
+      },
+      {
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
+        "id": "lk982ajxfswpbmo2i0",
+        "title": "Fix word-wrap of task"
+      },
+      {
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
+        "id": "lk9c6moigu55zg46c1",
+        "title": "Rewrite AddListCard"
       }
     ]
   }

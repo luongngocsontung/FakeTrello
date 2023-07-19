@@ -75,3 +75,21 @@ export const addTaskToAnotherList = (
         ...taskDropList.tasksId.slice(indexAppend),
     ];
 };
+
+// Scroll to the end of right
+export const scrollToEdge = (
+    element: Element,
+    direction: "right" | "left" | "top" | "bottom"
+) => {
+    if (["right", "left"].includes(direction)) {
+        element.scrollTo({
+            left: direction === "right" ? element.scrollWidth : 0,
+            behavior: "smooth",
+        });
+    } else {
+        element.scrollTo({
+            top: direction === "bottom" ? element.scrollHeight : 0,
+            behavior: "smooth",
+        });
+    }
+};
