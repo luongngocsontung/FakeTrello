@@ -16,13 +16,14 @@
         "tasksId": [
           "lk6sosww1fwixqykmm",
           "lk5pdr7o57cfua803c",
-          "lk5ph15ykdkv6kevqn"
+          "lk9s0mvte1v9ycokjy"
         ]
       },
       {
         "id": "TueJul11202323:35:02GMT+0700(IndochinaTime)",
         "title": "WIP",
         "tasksId": [
+          "lk5ph15ykdkv6kevqn",
           "TueJul11202323:35:32GMT+0700(IndochinaTime)"
         ]
       },
@@ -121,7 +122,7 @@
       {
         "id": "lk5ph15ykdkv6kevqn",
         "title": "When dragging list/task to the edge (top, bottom, left, right), page should scroll to corresponding direction ",
-        "listId": "TueJul11202323:34:20GMT+0700(IndochinaTime)"
+        "listId": "TueJul11202323:35:02GMT+0700(IndochinaTime)"
       },
       {
         "id": "lk5pi6d6675r4amia5",
@@ -207,6 +208,11 @@
         "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
         "id": "lk9c6moigu55zg46c1",
         "title": "Rewrite AddListCard"
+      },
+      {
+        "listId": "TueJul11202323:34:20GMT+0700(IndochinaTime)",
+        "id": "lk9s0mvte1v9ycokjy",
+        "title": "While open dropdown from List -> drag any element, the dropdown is not hidden"
       }
     ]
   }

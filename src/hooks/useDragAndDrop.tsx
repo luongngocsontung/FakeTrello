@@ -14,7 +14,7 @@ let shiftY = 0;
 let mouseClientX = 0;
 let mouseClientY = 0;
 let isMoving = false;
-let droppableContainer: Element | null = null;
+let scrollEdge: any = null;
 
 function useDragAndDrop() {
     const dispatch = useAppDispatch();
@@ -23,15 +23,48 @@ function useDragAndDrop() {
     const moveAt = (pageX: number, pageY: number) => {
         cloneDraggingElement!.style.left = pageX - shiftX + "px";
         cloneDraggingElement!.style.top = pageY - shiftY + "px";
+
+        // const droppableContainer = placeHolderElement?.closest(
+        //     ".droppable"
+        // ) as HTMLElement;
+        // console.log(">>>placeholder", placeHolderElement);
         // if (!droppableContainer) return;
-        // // Scroll on Edge
+        // // Auto scroll if mouse is at edge
         // if (draggingElement?.id === "list-dnd") {
-        //     if (window.innerWidth - pageX < 100) {
-        //         const scrollGap = 10 + droppableContainer.scrollLeft;
-        //         droppableContainer.scrollTo({
-        //             left: scrollGap,
-        //             behavior: "smooth",
-        //         });
+        //     const gapLeft = pageX - droppableContainer.offsetLeft;
+        //     const gapRight = droppableContainer.offsetWidth - pageX;
+        //     const isAbleScroll = gapLeft < 100 || gapRight < 100;
+        //     if (isAbleScroll) {
+        //         if (scrollEdge) return;
+        //         const gap = gapLeft < 100 ? -1.5 : 2.3;
+        //         scrollEdge = setInterval(() => {
+        //             droppableContainer!.scrollTo({
+        //                 left: droppableContainer!.scrollLeft + gap,
+        //             });
+        //         }, 0);
+        //     } else {
+        //         clearInterval(scrollEdge);
+        //         scrollEdge = null;
+        //     }
+        // } else if (draggingElement?.id === "task-dnd") {
+        //     const boundingDroppable =
+        //         droppableContainer.getBoundingClientRect();
+        //     const gapTop = pageY - boundingDroppable.top;
+        //     const gapBottom =
+        //         boundingDroppable.height + boundingDroppable.top - pageY;
+        //     const isAbleScroll = gapTop < 50 || gapBottom < 50;
+        //     if (isAbleScroll) {
+        //         if (scrollEdge) return;
+        //         const gap = gapTop < 50 ? -1 : 1.5;
+        //         scrollEdge = setInterval(() => {
+        //             // console.log("Scrolling", droppableContainer);
+        //             droppableContainer!.scrollTo({
+        //                 top: droppableContainer!.scrollTop + gap,
+        //             });
+        //         }, 0);
+        //     } else {
+        //         clearInterval(scrollEdge);
+        //         scrollEdge = null;
         //     }
         // }
     };
@@ -109,7 +142,6 @@ function useDragAndDrop() {
                 // add placeholder right before dragging element
                 const droppableEl = draggingElement.closest(".droppable");
                 droppableEl?.insertBefore(placeHolderElement, draggingElement);
-                droppableContainer = droppableEl;
             }
         } else {
             if (!cloneDraggingElement || !placeHolderElement) return;
@@ -247,6 +279,8 @@ function useDragAndDrop() {
         document.removeEventListener("mousemove", handleOnMouseMove);
         // Clean up
         document.getElementById("fake-trello")?.classList.remove("no-hover");
+        clearTimeout(scrollEdge);
+        scrollEdge = null;
         draggingElement.hidden = false;
         draggingElement = null;
         cloneDraggingElement?.remove();
