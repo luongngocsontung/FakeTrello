@@ -93,6 +93,10 @@ const StyledAddListButton = styled.div`
         border-color: transparent;
         color: white;
         border-radius: 12px;
+
+        &:hover {
+            background-color: #ffffff23;
+        }
     }
 
     #add-list-container {

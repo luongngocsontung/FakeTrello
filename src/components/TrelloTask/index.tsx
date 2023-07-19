@@ -72,6 +72,7 @@ const StyledTrelloTask = styled.div`
         font-weight: 400;
         color: white;
         white-space: break-spaces;
+        word-wrap: break-word;
         cursor: pointer;
 
         #task-container {

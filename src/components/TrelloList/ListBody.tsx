@@ -1,15 +1,15 @@
 import React from "react";
 import { TrelloListProps } from ".";
 import { styled } from "styled-components";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppSelector } from "../../app/hooks";
 import { trelloListTasksId } from "../../features/Lists/listsSlice";
 import TrelloTask from "../TrelloTask";
+import AddTaskCard from "./AddTaskCard";
 
 function ListBody({ listId }: TrelloListProps) {
     const listTasksId = useAppSelector((state) =>
         trelloListTasksId(state, listId)
     );
-    const dispatch = useAppDispatch();
 
     if (!listTasksId) return false;
 
@@ -18,6 +18,7 @@ function ListBody({ listId }: TrelloListProps) {
             {listTasksId.map((id) => {
                 return <TrelloTask key={id} taskId={id} listId={listId} />;
             })}
+            <AddTaskCard listId={listId} />
         </StyledListBody>
     );
 }

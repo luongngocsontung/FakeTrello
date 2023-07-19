@@ -1,97 +1,35 @@
-import React, { useRef, useState } from "react";
-import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Input } from "antd";
+import React, { useState } from "react";
+import { PlusOutlined } from "@ant-design/icons";
+import { Button } from "antd";
 import { styled } from "styled-components";
 import { TrelloListProps } from ".";
-import { useAppDispatch } from "../../app/hooks";
-import { addTask } from "../../features/Tasks/taskSlice";
-import { getNewId } from "../../utils/functions";
-import { TextAreaRef } from "antd/es/input/TextArea";
-const { TextArea } = Input;
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { isOpenAddTask, openAddTask } from "../../features/Utils/utilsSlice";
 
 function ListFooter({ listId }: TrelloListProps) {
-    const [isAddingTask, setIsAddingTask] = useState(false);
-    const [title, setTitle] = useState("");
-    const titleRef = useRef<TextAreaRef>(null);
-
+    const isCloseAddTask = useAppSelector(
+        (state) => !isOpenAddTask(state, listId)
+    );
     const dispatch = useAppDispatch();
 
-    const handleAddNewTask = () => {
-        if (!title) return;
-
-        const newTask = {
-            listId: listId,
-            id: getNewId(),
-            title: title,
-        };
-        dispatch(addTask(newTask));
-        setTitle("");
-    };
+    if (!isCloseAddTask) return false;
 
     return (
-        <StyledListFooter
-            id="list-footer"
-            className={isAddingTask ? "open-add-task" : ""}
-        >
+        <StyledListFooter id="list-footer">
             <Button
                 type="ghost"
                 id="add-task-buttons"
                 icon={<PlusOutlined />}
-                onClick={() => {
-                    setIsAddingTask(true);
-                    titleRef.current?.focus();
-                }}
+                onClick={() => dispatch(openAddTask(listId))}
             >
                 Add a task
             </Button>
-
-            <div id="add-task-container">
-                <TextArea
-                    placeholder="Enter a title for this task..."
-                    bordered={false}
-                    autoSize={{ minRows: 3 }}
-                    ref={titleRef}
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    onPressEnter={(e) => {
-                        e.preventDefault();
-                        handleAddNewTask();
-                    }}
-                />
-                <div id="confirm-actions" className="mt-8">
-                    <Button
-                        id="confirm-add-task"
-                        type="primary"
-                        onClick={handleAddNewTask}
-                    >
-                        Add task
-                    </Button>
-                    <CloseOutlined
-                        style={{ fontSize: 21 }}
-                        onClick={() => {
-                            setIsAddingTask(false);
-                            setTitle("");
-                        }}
-                    />
-                </div>
-            </div>
         </StyledListFooter>
     );
 }
 
 const StyledListFooter = styled.div`
     padding: 8px;
-
-    &.open-add-task {
-        #add-task-buttons {
-            display: none;
-        }
-
-        #add-task-container {
-            opacity: 1;
-            position: unset;
-        }
-    }
 
     #add-task-buttons {
         display: flex;
@@ -106,37 +44,6 @@ const StyledListFooter = styled.div`
 
     #add-task-buttons:hover {
         background-color: #a6c5e229;
-    }
-
-    #add-task-container {
-        opacity: 0;
-        position: absolute;
-
-        textarea {
-            transition: none;
-            background-color: #22272b;
-            color: white;
-
-            &::placeholder {
-                color: #ffffffbd;
-            }
-        }
-
-        #add-task-buttons:hover {
-            background-color: #a6c5e229;
-        }
-
-        #confirm-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-
-            #confirm-add-task {
-                color: #1d2125;
-                font-weight: 400;
-                transition: none;
-            }
-        }
     }
 `;
 
