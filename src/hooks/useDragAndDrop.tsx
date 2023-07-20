@@ -14,60 +14,75 @@ let shiftY = 0;
 let mouseClientX = 0;
 let mouseClientY = 0;
 let isMoving = false;
-let scrollEdge: any = null;
+let scrollEdgeX: any = null;
+let scrollEdgeY: any = null;
+let mouseX: number = 0;
+let mouseY: number = 0;
+
+// Move cloneElement with mouse's position
+const moveAt = (pageX: number, pageY: number) => {
+    cloneDraggingElement!.style.left = pageX - shiftX + "px";
+    cloneDraggingElement!.style.top = pageY - shiftY + "px";
+    scrollAtEdge(pageX, pageY);
+};
+
+// Auto scroll when mouse meets droppable element Edge
+const scrollAtEdge = (pageX: number, pageY: number) => {
+    const droppableElement = placeHolderElement?.closest(".droppable");
+    if (!draggingElement || !droppableElement) return;
+
+    const edgeLeft = 150;
+    const edgeRight = window.innerWidth - 150;
+    mouseX = pageX;
+    mouseY = pageY;
+    let maxStep = 100;
+    const scrollingX = () => {
+        if (mouseX < edgeLeft || mouseX > edgeRight) {
+            const intensityLeft = (edgeLeft - mouseX) / 2000;
+            const intensityRight = (mouseX - edgeRight) / 2000;
+            const gapRight = maxStep * intensityRight;
+            const gapLeft = -maxStep * intensityLeft;
+            const gap = mouseX < edgeLeft ? gapLeft : gapRight;
+            droppableElement.scrollTo(droppableElement.scrollLeft + gap, 0);
+            if (scrollEdgeX) return;
+            scrollEdgeX = setInterval(scrollingX, 3);
+            return;
+        } else {
+            if (!scrollEdgeX) return;
+            console.log("STOPPED X");
+            clearInterval(scrollEdgeX);
+            return (scrollEdgeX = null);
+        }
+    };
+
+    const scrollingY = () => {
+        const boundingRect = droppableElement.getBoundingClientRect();
+        const edgeTop = boundingRect.top + 50;
+        const edgeBottom = boundingRect.top + boundingRect.height - 50;
+        if (mouseY < edgeTop || mouseY > edgeBottom) {
+            if (scrollEdgeY) return;
+            console.log(">>>> Y: ", droppableElement.scrollTop);
+            const gap = mouseY < edgeTop ? -1 : 1;
+            droppableElement.scrollTo(droppableElement.scrollTop + gap, 0);
+            scrollEdgeX = setTimeout(scrollingX, 1);
+        } else {
+            if (!scrollEdgeY) return;
+            console.log("STOPPED Y");
+            clearTimeout(scrollEdgeY);
+            return (scrollEdgeY = null);
+        }
+    };
+
+    if (draggingElement.id === "list-dnd") {
+        scrollingX();
+    } else {
+        scrollingX();
+        scrollingY();
+    }
+};
 
 function useDragAndDrop() {
     const dispatch = useAppDispatch();
-
-    // Move cloneElement with mouse's position
-    const moveAt = (pageX: number, pageY: number) => {
-        cloneDraggingElement!.style.left = pageX - shiftX + "px";
-        cloneDraggingElement!.style.top = pageY - shiftY + "px";
-
-        // const droppableContainer = placeHolderElement?.closest(
-        //     ".droppable"
-        // ) as HTMLElement;
-        // console.log(">>>placeholder", placeHolderElement);
-        // if (!droppableContainer) return;
-        // // Auto scroll if mouse is at edge
-        // if (draggingElement?.id === "list-dnd") {
-        //     const gapLeft = pageX - droppableContainer.offsetLeft;
-        //     const gapRight = droppableContainer.offsetWidth - pageX;
-        //     const isAbleScroll = gapLeft < 100 || gapRight < 100;
-        //     if (isAbleScroll) {
-        //         if (scrollEdge) return;
-        //         const gap = gapLeft < 100 ? -1.5 : 2.3;
-        //         scrollEdge = setInterval(() => {
-        //             droppableContainer!.scrollTo({
-        //                 left: droppableContainer!.scrollLeft + gap,
-        //             });
-        //         }, 0);
-        //     } else {
-        //         clearInterval(scrollEdge);
-        //         scrollEdge = null;
-        //     }
-        // } else if (draggingElement?.id === "task-dnd") {
-        //     const boundingDroppable =
-        //         droppableContainer.getBoundingClientRect();
-        //     const gapTop = pageY - boundingDroppable.top;
-        //     const gapBottom =
-        //         boundingDroppable.height + boundingDroppable.top - pageY;
-        //     const isAbleScroll = gapTop < 50 || gapBottom < 50;
-        //     if (isAbleScroll) {
-        //         if (scrollEdge) return;
-        //         const gap = gapTop < 50 ? -1 : 1.5;
-        //         scrollEdge = setInterval(() => {
-        //             // console.log("Scrolling", droppableContainer);
-        //             droppableContainer!.scrollTo({
-        //                 top: droppableContainer!.scrollTop + gap,
-        //             });
-        //         }, 0);
-        //     } else {
-        //         clearInterval(scrollEdge);
-        //         scrollEdge = null;
-        //     }
-        // }
-    };
 
     const handleOnMouseDown = (e: MouseEvent) => {
         // Only check for left mouse down
@@ -279,8 +294,10 @@ function useDragAndDrop() {
         document.removeEventListener("mousemove", handleOnMouseMove);
         // Clean up
         document.getElementById("fake-trello")?.classList.remove("no-hover");
-        clearTimeout(scrollEdge);
-        scrollEdge = null;
+        clearInterval(scrollEdgeX);
+        clearTimeout(scrollEdgeY);
+        scrollEdgeX = null;
+        scrollEdgeY = null;
         draggingElement.hidden = false;
         draggingElement = null;
         cloneDraggingElement?.remove();
