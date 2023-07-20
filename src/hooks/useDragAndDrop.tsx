@@ -3,11 +3,13 @@ import { useAppDispatch } from "../app/hooks";
 import { reOrderList } from "../features/FakeTrello/trelloSlice";
 import { reOrderTask } from "../features/Lists/listsSlice";
 
-let draggingElement: HTMLDivElement | null = null;
-let placeHolderElement: HTMLDivElement | null = null;
-let cloneDraggingElement: HTMLDivElement | null = null;
+let draggingElement: HTMLElement | null = null;
+let placeHolderElement: HTMLElement | null = null;
+let cloneDraggingElement: HTMLElement | null = null;
 let clickedElement: HTMLElement | null = null;
-let touchedElement: HTMLDivElement | null | undefined | Element = null;
+let touchedElement: HTMLElement | null | undefined | Element = null;
+let listsContainer: HTMLElement | null | undefined = null;
+let tasksContainer: HTMLElement | null | undefined = null;
 let dropPoistion: string = "";
 let shiftX = 0;
 let shiftY = 0;
@@ -28,56 +30,95 @@ const moveAt = (pageX: number, pageY: number) => {
 
 // Auto scroll when mouse meets droppable element Edge
 const scrollAtEdge = (pageX: number, pageY: number) => {
-    const droppableElement = placeHolderElement?.closest(".droppable");
-    if (!draggingElement || !droppableElement) return;
+    if (!draggingElement) return;
 
-    const edgeLeft = 150;
-    const edgeRight = window.innerWidth - 150;
+    // store global mouse position for purpose of scroll fast or slow
     mouseX = pageX;
     mouseY = pageY;
-    let maxStep = 100;
-    const scrollingX = () => {
+    let maxStep = 50;
+
+    const autoScrollX = () => {
+        // Get point has will active auto scroll
+        const edgeLeft = 200;
+        const edgeRight = window.innerWidth - 200;
         if (mouseX < edgeLeft || mouseX > edgeRight) {
-            const intensityLeft = (edgeLeft - mouseX) / 2000;
-            const intensityRight = (mouseX - edgeRight) / 2000;
-            const gapRight = maxStep * intensityRight;
-            const gapLeft = -maxStep * intensityLeft;
-            const gap = mouseX < edgeLeft ? gapLeft : gapRight;
-            droppableElement.scrollTo(droppableElement.scrollLeft + gap, 0);
-            if (scrollEdgeX) return;
-            scrollEdgeX = setInterval(scrollingX, 3);
-            return;
+            if (scrollEdgeX) return true;
+            scrollEdgeX = setInterval(() => {
+                if (!listsContainer) return false;
+                let gap = 0;
+                if (mouseX < edgeLeft) {
+                    // If element has been scrolled to the edge then do nothing
+                    if (listsContainer.scrollLeft <= 0) return false;
+                    // Caculate scrollBy
+                    const intensity = (edgeLeft - mouseX) / 2000;
+                    gap = -maxStep * intensity;
+                } else if (mouseX > edgeRight) {
+                    // If element has been scrolled to the edge then do nothing
+                    if (
+                        listsContainer.scrollLeft >=
+                        listsContainer.scrollWidth - listsContainer.offsetWidth
+                    )
+                        return false;
+                    // Caculate scrollBy
+                    const intensity = (mouseX - edgeRight) / 2000;
+                    gap = maxStep * intensity;
+                }
+                listsContainer.scrollBy(gap, 0);
+                return true;
+            }, 0);
         } else {
-            if (!scrollEdgeX) return;
-            console.log("STOPPED X");
+            if (!scrollEdgeX) return false;
             clearInterval(scrollEdgeX);
-            return (scrollEdgeX = null);
+            scrollEdgeX = null;
+            return false;
         }
     };
 
-    const scrollingY = () => {
-        const boundingRect = droppableElement.getBoundingClientRect();
+    const autoScrollY = () => {
+        if (!tasksContainer) return;
+        const boundingRect = tasksContainer.getBoundingClientRect();
         const edgeTop = boundingRect.top + 50;
         const edgeBottom = boundingRect.top + boundingRect.height - 50;
-        if (mouseY < edgeTop || mouseY > edgeBottom) {
-            if (scrollEdgeY) return;
-            console.log(">>>> Y: ", droppableElement.scrollTop);
-            const gap = mouseY < edgeTop ? -1 : 1;
-            droppableElement.scrollTo(droppableElement.scrollTop + gap, 0);
-            scrollEdgeX = setTimeout(scrollingX, 1);
+        if (pageY < edgeTop || pageY > edgeBottom) {
+            if (scrollEdgeY) return true;
+            scrollEdgeY = setInterval(() => {
+                if (!tasksContainer) return false;
+                let gap = 0;
+                if (mouseY < edgeTop) {
+                    // If element has been scrolled to the edge then do nothing
+                    if (tasksContainer.scrollTop <= 0) return false;
+                    // Caculate scrollBy
+                    const intensity = (edgeTop - mouseY) / 2000;
+                    gap = -maxStep * intensity;
+                } else if (mouseY > edgeBottom) {
+                    // If element has been scrolled to the edge then do nothing
+                    if (
+                        tasksContainer.scrollTop >=
+                        tasksContainer.scrollHeight - boundingRect.height
+                    )
+                        return false;
+                    // Caculate scrollBy
+                    const intensity = (mouseY - edgeBottom) / 2000;
+                    gap = maxStep * intensity;
+                }
+                tasksContainer.scrollBy(0, gap);
+                return true;
+            }, 0);
         } else {
-            if (!scrollEdgeY) return;
-            console.log("STOPPED Y");
-            clearTimeout(scrollEdgeY);
-            return (scrollEdgeY = null);
+            if (!scrollEdgeY) return false;
+            clearInterval(scrollEdgeY);
+            scrollEdgeY = null;
+            return false;
         }
     };
 
     if (draggingElement.id === "list-dnd") {
-        scrollingX();
-    } else {
-        scrollingX();
-        scrollingY();
+        autoScrollX();
+    } else if (draggingElement.id === "task-dnd") {
+        // prioriy autoScrollX first
+        if (autoScrollX()) return;
+        tasksContainer = placeHolderElement?.closest(".droppable");
+        autoScrollY();
     }
 };
 
@@ -108,6 +149,9 @@ function useDragAndDrop() {
         // For checking mouse move (up/down/left/right)
         mouseClientX = e.clientX;
         mouseClientY = e.clientY;
+
+        // Store some value because if we get that from mousemove will decrease performance since mousemove call continuosly
+        listsContainer = document.getElementById("lists-container");
 
         document.addEventListener("mousemove", handleOnMouseMove);
     };
@@ -295,7 +339,7 @@ function useDragAndDrop() {
         // Clean up
         document.getElementById("fake-trello")?.classList.remove("no-hover");
         clearInterval(scrollEdgeX);
-        clearTimeout(scrollEdgeY);
+        clearInterval(scrollEdgeY);
         scrollEdgeX = null;
         scrollEdgeY = null;
         draggingElement.hidden = false;

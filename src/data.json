@@ -33,7 +33,6 @@
         "id": "TueJul11202323:35:02GMT+0700(IndochinaTime)",
         "title": "WIP",
         "tasksId": [
-          "lk5ph15ykdkv6kevqn",
           "TueJul11202323:35:32GMT+0700(IndochinaTime)"
         ]
       },
@@ -46,6 +45,7 @@
         "id": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
         "title": "Done",
         "tasksId": [
+          "lk5ph15ykdkv6kevqn",
           "lk6ogtyched6f6tbo7",
           "lk5pi6d6675r4amia5",
           "lk5pcchgmepg4l65zi",
@@ -182,7 +182,7 @@
       {
         "id": "lk5ph15ykdkv6kevqn",
         "title": "When dragging list/task to the edge (top, bottom, left, right), page should scroll to corresponding direction ",
-        "listId": "TueJul11202323:35:02GMT+0700(IndochinaTime)"
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)"
       },
       {
         "id": "lk5pi6d6675r4amia5",
