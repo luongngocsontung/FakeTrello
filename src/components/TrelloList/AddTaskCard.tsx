@@ -7,12 +7,21 @@ import { CloseOutlined } from "@ant-design/icons";
 import { styled } from "styled-components";
 import TextArea from "../common/TextArea";
 import { closeAddTask, isOpenAddTask } from "../../features/Utils/utilsSlice";
+import useCloseOnMouseDown from "../../hooks/useCloseOnMouseDown";
 
 function AddTaskCard({ listId }: { listId: string }) {
     const componentRef = useRef<HTMLDivElement>(null);
     const titleRef = useRef<HTMLTextAreaElement>(null);
     const isOpen = useAppSelector((state) => isOpenAddTask(state, listId));
     const dispatch = useAppDispatch();
+    useCloseOnMouseDown({
+        isOpen: isOpen,
+        htmlElement: componentRef.current,
+        action() {
+            dispatch(closeAddTask(listId));
+            handleAddNewTask();
+        },
+    });
 
     const scrollToBottom = () => {
         const taskContainer = componentRef.current?.closest("#list-body");
@@ -41,24 +50,6 @@ function AddTaskCard({ listId }: { listId: string }) {
 
         // Focus input field when add task card open
         titleRef.current?.focus();
-        const handleClickOutside = (event: MouseEvent) => {
-            if (
-                componentRef.current &&
-                !componentRef.current.contains(event.target as Node)
-            ) {
-                // User clicked outside the component
-                dispatch(closeAddTask(listId));
-                handleAddNewTask();
-            }
-        };
-        // Add event listener to detect clicks outside the component
-        setTimeout(() => {
-            document.addEventListener("mousedown", handleClickOutside);
-        }, 1);
-        // Clean up the event listener when the component unmounts
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
     }, [isOpen]);
 
     return (

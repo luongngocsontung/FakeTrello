@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Button } from "antd";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { addList } from "../../features/Lists/listsSlice";
@@ -12,6 +12,7 @@ import {
     isOpenAddTask,
     openAddTask,
 } from "../../features/Utils/utilsSlice";
+import useCloseOnMouseDown from "../../hooks/useCloseOnMouseDown";
 
 const ADD_LIST_ID = "add-list";
 
@@ -22,6 +23,13 @@ function AddListButton() {
         isOpenAddTask(state, ADD_LIST_ID)
     );
     const dispatch = useAppDispatch();
+    useCloseOnMouseDown({
+        isOpen: isOpenAddList,
+        htmlElement: componentRef.current,
+        action() {
+            dispatch(closeAddTask(ADD_LIST_ID));
+        },
+    });
 
     const scrollToRight = () => {
         const listContainer = componentRef.current?.closest("#lists-container");
@@ -50,23 +58,6 @@ function AddListButton() {
 
         // Focus input when add list card open
         titleRef.current?.focus();
-
-        const handleClickOutside = (e: MouseEvent) => {
-            if (
-                componentRef.current &&
-                !componentRef.current.contains(e.target as Node)
-            ) {
-                // User clicked outside the component
-                dispatch(closeAddTask(ADD_LIST_ID));
-            }
-        };
-        setTimeout(() => {
-            document.addEventListener("mousedown", handleClickOutside);
-        }, 1);
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
     }, [isOpenAddList]);
 
     return (

@@ -25,8 +25,7 @@
         "title": "To Do",
         "tasksId": [
           "lk6sosww1fwixqykmm",
-          "lk5pdr7o57cfua803c",
-          "lk9s0mvte1v9ycokjy"
+          "lk5pdr7o57cfua803c"
         ]
       },
       {
@@ -45,6 +44,8 @@
         "id": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
         "title": "Done",
         "tasksId": [
+          "lk9s0mvte1v9ycokjy",
+          "lkc04qo73vv9uwuwmn",
           "lk5ph15ykdkv6kevqn",
           "lk6ogtyched6f6tbo7",
           "lk5pi6d6675r4amia5",
@@ -270,9 +271,14 @@
         "title": "Rewrite AddListCard"
       },
       {
-        "listId": "TueJul11202323:34:20GMT+0700(IndochinaTime)",
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
         "id": "lk9s0mvte1v9ycokjy",
         "title": "While open dropdown from List -> drag any element, the dropdown is not hidden"
+      },
+      {
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
+        "id": "lkc04qo73vv9uwuwmn",
+        "title": "Fix empty localStorage make app crashed"
       }
     ]
   }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -9,11 +9,20 @@ import {
 import { TrelloListProps } from ".";
 import { EllipsisOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Dropdown, MenuProps } from "antd";
+import useCloseOnMouseDown from "../../hooks/useCloseOnMouseDown";
 
 function ListHeader({ listId }: TrelloListProps) {
     const listTitle = useAppSelector((state) => trelloListTitle(state, listId));
     const dispatch = useAppDispatch();
     const [title, setTitle] = useState(listTitle);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    useCloseOnMouseDown({
+        isOpen: isDropdownOpen,
+        className: "ant-dropdown",
+        action() {
+            setIsDropdownOpen(false);
+        },
+    });
 
     const handleRemoveList = () => {
         dispatch(removeList(listId));
@@ -45,6 +54,26 @@ function ListHeader({ listId }: TrelloListProps) {
         );
     };
 
+    // useEffect(() => {
+    //     if (isDropdownOpen) {
+    //         const dropdown = document.getElementsByClassName("ant-dropdown")[0];
+
+    //         const handleClickOutside = (e: MouseEvent) => {
+    //             if (dropdown && !dropdown.contains(e.target as Node)) {
+    //                 // User clicked outside the component
+    //                 setIsDropdownOpen(false);
+    //             }
+    //         };
+    //         setTimeout(() => {
+    //             document.addEventListener("mousedown", handleClickOutside);
+    //         }, 1);
+
+    //         return () => {
+    //             document.removeEventListener("mousedown", handleClickOutside);
+    //         };
+    //     }
+    // }, [isDropdownOpen]);
+
     return (
         <StyledListHeader id="task-dnd" className="draggable">
             <input
@@ -55,8 +84,13 @@ function ListHeader({ listId }: TrelloListProps) {
                 onFocus={(e) => e.currentTarget.setAttribute("isFocus", "true")}
             />
 
-            <Dropdown menu={{ items }} trigger={["click"]}>
-                <EllipsisOutlined style={{ fontSize: 21 }} />
+            <Dropdown menu={{ items }} open={isDropdownOpen}>
+                <EllipsisOutlined
+                    style={{ fontSize: 21 }}
+                    onClick={() => {
+                        setIsDropdownOpen(true);
+                    }}
+                />
             </Dropdown>
         </StyledListHeader>
     );
