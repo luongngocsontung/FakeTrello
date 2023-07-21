@@ -24,6 +24,32 @@
     padding-bottom: 8px;
 }
 
+.mt-16 {
+    margin-top: 16px;
+}
+.ml-16 {
+    margin-left: 16px;
+}
+.mr-16 {
+    margin-right: 16px;
+}
+.mb-16 {
+    margin-bottom: 16px;
+}
+
+.pt-16 {
+    padding-top: 16px;
+}
+.pl-16 {
+    padding-left: 16px;
+}
+.pr-16 {
+    padding-right: 16px;
+}
+.pb-16 {
+    padding-bottom: 16px;
+}
+
 .ant-dropdown-menu {
     background-color: #22272b !important;
     box-shadow: inset 0px 0px 0px 1px #BCD6F01F, 0px 8px 12px #0304045C, 0px 0px 1px #03040480 !important;

@@ -4,7 +4,8 @@ import { trelloTaskTitle } from "../../features/Tasks/taskSlice";
 import { styled } from "styled-components";
 import { Button } from "antd";
 import { EditOutlined } from "@ant-design/icons";
-import { openTaskTitleModal } from "../../features/TrelloTaskTitleModal/TaskTitleModalSlice";
+import { openTaskTitleQuickCard } from "../../features/TrelloTaskQuickCard/TaskTitleQuickCardSlice";
+import { setTaskModalId } from "../../features/TrelloTaskModal/taskModalSlice";
 
 export interface TrelloTaskProps {
     taskId: string;
@@ -16,13 +17,13 @@ function TrelloTask({ taskId, listId }: TrelloTaskProps) {
     const taskTitle = useAppSelector((state) => trelloTaskTitle(state, taskId));
     const dispatch = useAppDispatch();
 
-    const handleOpenTaskTitleModal = () => {
+    const handleOpenTaskTitleQuickCard = () => {
         const taskHTML = taskRef.current;
         if (!taskHTML) return;
 
         const taskBoundingRect = taskHTML.getBoundingClientRect();
         dispatch(
-            openTaskTitleModal({
+            openTaskTitleQuickCard({
                 listId,
                 taskId,
                 top: taskBoundingRect.top + "px",
@@ -31,6 +32,15 @@ function TrelloTask({ taskId, listId }: TrelloTaskProps) {
                 isOpen: true,
             })
         );
+    };
+
+    const handleOpenTaskModal = (
+        e: React.MouseEvent<HTMLDivElement, MouseEvent>
+    ) => {
+        const target = e.target as HTMLElement;
+        // If user click open task title quick card then do nothing
+        if (["BUTTON", "svg"].includes(target.tagName)) return;
+        dispatch(setTaskModalId(taskId));
     };
 
     if (!taskTitle) return false;
@@ -42,11 +52,11 @@ function TrelloTask({ taskId, listId }: TrelloTaskProps) {
             trello-id={taskId}
             ref={taskRef}
         >
-            <div id="trello-task">
+            <div id="trello-task" onClick={handleOpenTaskModal}>
                 <div id="task-container">
                     <span>{taskTitle}</span>
                     <Button
-                        onClick={handleOpenTaskTitleModal}
+                        onClick={handleOpenTaskTitleQuickCard}
                         id="edit-task"
                         icon={<EditOutlined />}
                     />

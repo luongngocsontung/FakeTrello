@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 
-interface TaskTitleModalState {
+interface TaskTitleQuickCardState {
     isOpen: boolean;
     taskId: string;
     listId: string;
@@ -10,7 +10,7 @@ interface TaskTitleModalState {
     width: string;
 }
 
-const initialState: TaskTitleModalState = {
+const initialState: TaskTitleQuickCardState = {
     isOpen: false,
     taskId: "",
     listId: "",
@@ -19,13 +19,13 @@ const initialState: TaskTitleModalState = {
     width: "",
 };
 
-export const TaskTitleModalSlice = createSlice({
-    name: "Task Title Modal",
+export const TaskTitleQuickCardSlice = createSlice({
+    name: "Task Title Quick Card",
     initialState,
     reducers: {
-        openTaskTitleModal: (
+        openTaskTitleQuickCard: (
             state,
-            params: PayloadAction<TaskTitleModalState>
+            params: PayloadAction<TaskTitleQuickCardState>
         ) => {
             const { listId, taskId, top, left, width, isOpen } = params.payload;
             state.listId = listId;
@@ -36,15 +36,16 @@ export const TaskTitleModalSlice = createSlice({
             state.isOpen = isOpen;
         },
 
-        closeTaskTitleModal: (state) => {
+        closeTaskTitleQuickCard: (state) => {
             state.isOpen = false;
         },
     },
 });
 
-export const TaskTitleModal = (state: RootState) => state.taskTitleModal;
+export const TaskTitleQuickCard = (state: RootState) =>
+    state.taskTitleQuickCard;
 
-export const { openTaskTitleModal, closeTaskTitleModal } =
-    TaskTitleModalSlice.actions;
+export const { openTaskTitleQuickCard, closeTaskTitleQuickCard } =
+    TaskTitleQuickCardSlice.actions;
 
-export default TaskTitleModalSlice.reducer;
+export default TaskTitleQuickCardSlice.reducer;

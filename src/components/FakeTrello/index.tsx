@@ -3,7 +3,8 @@ import SaveTrelloButton from "./SaveTrelloButton";
 import useDragAndDrop from "../../hooks/useDragAndDrop";
 import TrelloBoard from "./TrelloBoard";
 import { Button } from "antd";
-import TrelloTaskTitleModal from "../TrelloTask/TrelloTaskTitleModal";
+import TrelloTaskQuickCard from "../common/TaskTItleQuickCard";
+import TrelloTaskModal from "../common/TaskModal";
 
 function FakeTrello() {
     useDragAndDrop();
@@ -36,7 +37,8 @@ function FakeTrello() {
                 <SaveTrelloButton />
             </div>
             <TrelloBoard />
-            <TrelloTaskTitleModal />
+            <TrelloTaskQuickCard />
+            <TrelloTaskModal />
         </StyledFakeTrello>
     );
 }

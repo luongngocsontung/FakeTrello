@@ -1,31 +1,31 @@
 import React, { useEffect, useRef } from "react";
 import { styled } from "styled-components";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import {
-    TaskTitleModal,
-    closeTaskTitleModal,
-} from "../../features/TrelloTaskTitleModal/TaskTitleModalSlice";
+    TaskTitleQuickCard,
+    closeTaskTitleQuickCard,
+} from "../../../features/TrelloTaskQuickCard/TaskTitleQuickCardSlice";
 import { Button, Tag } from "antd";
 import {
     changeTaskTitle,
     deleteTask,
     trelloTaskTitle,
-} from "../../features/Tasks/taskSlice";
+} from "../../../features/Tasks/taskSlice";
 import { DeleteOutlined } from "@ant-design/icons";
-import TextArea from "../common/TextArea";
+import TextArea from "../TextArea";
 
 let scrollId: any = null;
 
-function TrelloTaskTitleModal() {
+function TrelloTaskQuickCard() {
     const quickCardRef = useRef<HTMLDivElement>(null);
     const titleRef = useRef<HTMLTextAreaElement>(null);
     const { listId, taskId, top, left, width, isOpen } =
-        useAppSelector(TaskTitleModal);
+        useAppSelector(TaskTitleQuickCard);
     const taskTitle = useAppSelector((state) => trelloTaskTitle(state, taskId));
     const dispatch = useAppDispatch();
 
     const closeModal = () => {
-        dispatch(closeTaskTitleModal());
+        dispatch(closeTaskTitleQuickCard());
     };
 
     const handleOnClickModal = (
@@ -111,7 +111,7 @@ function TrelloTaskTitleModal() {
     }, [isOpen]);
 
     return (
-        <StyledTrelloTaskTitleModal
+        <StyledTrelloTaskTitleQuickCard
             id="task-title-modal"
             className={isOpen ? "modal-open" : ""}
             onClick={handleOnClickModal}
@@ -143,11 +143,11 @@ function TrelloTaskTitleModal() {
                     </Tag>
                 </div>
             </div>
-        </StyledTrelloTaskTitleModal>
+        </StyledTrelloTaskTitleQuickCard>
     );
 }
 
-const StyledTrelloTaskTitleModal = styled.div`
+const StyledTrelloTaskTitleQuickCard = styled.div`
     bottom: 0;
     left: 0;
     position: fixed;
@@ -216,4 +216,4 @@ const StyledTrelloTaskTitleModal = styled.div`
     }
 `;
 
-export default TrelloTaskTitleModal;
+export default TrelloTaskQuickCard;

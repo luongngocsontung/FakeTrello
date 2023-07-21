@@ -126,7 +126,7 @@ export const ListsSlice = createSlice({
 export const trelloListTasksId = (state: RootState, listId: string) =>
     state.trelloLists.lists.find((list) => list.id === listId)?.tasksId;
 
-export const trelloListTitle = (state: RootState, listId: string) =>
+export const trelloListTitle = (state: RootState, listId: string | undefined) =>
     state.trelloLists.lists.find((list) => list.id === listId)?.title;
 
 export const { addList, changeListTitle, removeList, reOrderTask } =

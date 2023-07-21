@@ -6,6 +6,7 @@ export interface TaskState {
     listId: string;
     id: string;
     title: string;
+    description: string;
 }
 
 export interface TaskSliceState {
@@ -28,6 +29,7 @@ export const TasksSlice = createSlice({
                 listId: params.payload.listId,
                 id: params.payload.id,
                 title: params.payload.title,
+                description: "",
             });
         },
 
@@ -41,6 +43,18 @@ export const TasksSlice = createSlice({
             if (!task) return;
 
             task.title = params.payload.newTitle;
+        },
+
+        changeTaskDescription: (
+            state,
+            params: PayloadAction<{ taskId: string; description: string }>
+        ) => {
+            const task = state.tasks.find(
+                (task) => task.id === params.payload.taskId
+            );
+            if (!task) return;
+
+            task.description = params.payload.description;
         },
 
         deleteTask: (
@@ -69,9 +83,13 @@ export const TasksSlice = createSlice({
     },
 });
 
+export const trelloTask = (state: RootState, taskId: string | null) =>
+    state.trelloTasks.tasks.find((task) => task.id === taskId);
+
 export const trelloTaskTitle = (state: RootState, taskId: string) =>
     state.trelloTasks.tasks.find((task) => task.id === taskId)?.title;
 
-export const { addTask, changeTaskTitle, deleteTask } = TasksSlice.actions;
+export const { addTask, changeTaskTitle, deleteTask, changeTaskDescription } =
+    TasksSlice.actions;
 
 export default TasksSlice.reducer;

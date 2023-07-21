@@ -24,8 +24,7 @@
         "id": "TueJul11202323:34:20GMT+0700(IndochinaTime)",
         "title": "To Do",
         "tasksId": [
-          "lk6sosww1fwixqykmm",
-          "lk5pdr7o57cfua803c"
+          "lkc47yhl97i0k2gj1r"
         ]
       },
       {
@@ -44,6 +43,8 @@
         "id": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
         "title": "Done",
         "tasksId": [
+          "lk5pdr7o57cfua803c",
+          "lk6sosww1fwixqykmm",
           "lk9s0mvte1v9ycokjy",
           "lkc04qo73vv9uwuwmn",
           "lk5ph15ykdkv6kevqn",
@@ -73,7 +74,9 @@
       {
         "id": "lk954qwsblaouq91ww",
         "title": "Trash",
-        "tasksId": []
+        "tasksId": [
+          "lkc21h760fjzonpyoa"
+        ]
       },
       {
         "id": "lkam6vbwql1e37pc2p",
@@ -93,7 +96,9 @@
       {
         "id": "lkam6wcvvlueeolcmk",
         "title": "4",
-        "tasksId": []
+        "tasksId": [
+          "lkc34seth3za4y2yao"
+        ]
       },
       {
         "id": "lkam6wo1x4m2ldu8zq",
@@ -132,7 +137,8 @@
       {
         "id": "TueJul11202323:35:32GMT+0700(IndochinaTime)",
         "title": "Make Fake Trello",
-        "listId": "TueJul11202323:35:02GMT+0700(IndochinaTime)"
+        "listId": "TueJul11202323:35:02GMT+0700(IndochinaTime)",
+        "description": ""
       },
       {
         "id": "TueJul11202323:35:48GMT+0700(IndochinaTime)",
@@ -178,7 +184,8 @@
       {
         "id": "lk5pdr7o57cfua803c",
         "title": "Add Modal for task (Description)",
-        "listId": "TueJul11202323:34:20GMT+0700(IndochinaTime)"
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
+        "description": "This is Line 1\nThis is Line 2\nThis is Line 3\nThis is Line 4\nHAHAHAHHA HOHOHOHOHOH"
       },
       {
         "id": "lk5ph15ykdkv6kevqn",
@@ -228,7 +235,7 @@
       {
         "id": "lk6sosww1fwixqykmm",
         "title": "Fix TaskTitleModal positionX",
-        "listId": "TueJul11202323:34:20GMT+0700(IndochinaTime)"
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)"
       },
       {
         "id": "lk7wqozq42zi8xmu79",
@@ -273,12 +280,29 @@
       {
         "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
         "id": "lk9s0mvte1v9ycokjy",
-        "title": "While open dropdown from List -> drag any element, the dropdown is not hidden"
+        "title": "While open dropdown from List -> drag any element, the dropdown is not hidden",
+        "description": ""
       },
       {
         "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
         "id": "lkc04qo73vv9uwuwmn",
         "title": "Fix empty localStorage make app crashed"
+      },
+      {
+        "listId": "lk954qwsblaouq91ww",
+        "id": "lkc21h760fjzonpyoa",
+        "title": "test"
+      },
+      {
+        "listId": "lkam6wcvvlueeolcmk",
+        "id": "lkc34seth3za4y2yao",
+        "title": "Helol"
+      },
+      {
+        "listId": "TueJul11202323:34:20GMT+0700(IndochinaTime)",
+        "id": "lkc47yhl97i0k2gj1r",
+        "title": "Add shadow for Dragging Element",
+        "description": "While Dragging Element, the draggingEl should have shadow for a better visual"
       }
     ]
   }
