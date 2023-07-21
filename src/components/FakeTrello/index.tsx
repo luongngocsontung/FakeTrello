@@ -8,25 +8,29 @@ import TrelloTaskTitleModal from "../TrelloTask/TrelloTaskTitleModal";
 function FakeTrello() {
     useDragAndDrop();
 
-    const getDataHref = () => {
+    const getDataHref = (
+        e:
+            | React.MouseEvent<HTMLAnchorElement, MouseEvent>
+            | React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) => {
         const localKeys = ["trello", "trelloLists", "trelloTasks"];
         const data: any = {};
         localKeys.forEach((key) => {
-            data[key] = JSON.parse(localStorage.getItem(key) || "");
+            data[key] = JSON.parse(localStorage.getItem(key) || "{}");
         });
         const jsonData = JSON.stringify(data, null, 2);
         const blob = new Blob([jsonData], {
             type: "application/json",
         });
         const downloadUrl = URL.createObjectURL(blob);
-        return downloadUrl;
+        e.currentTarget.setAttribute("href", downloadUrl);
     };
 
     return (
         <StyledFakeTrello id="fake-trello">
             <div id="title">
                 <span>Fake Trello</span>
-                <Button href={getDataHref()} download={"data.json"}>
+                <Button href="#" onClick={getDataHref} download={"data.json"}>
                     Download JSON files
                 </Button>
                 <SaveTrelloButton />

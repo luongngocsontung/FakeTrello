@@ -13,7 +13,7 @@ export interface TaskSliceState {
 }
 
 const initialState: TaskSliceState = {
-    tasks: JSON.parse(localStorage.getItem("trelloTasks") || "[]")?.tasks,
+    tasks: JSON.parse(localStorage.getItem("trelloTasks") || "{}")?.tasks || [],
 };
 
 export const TasksSlice = createSlice({

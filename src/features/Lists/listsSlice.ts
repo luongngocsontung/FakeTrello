@@ -17,7 +17,7 @@ export interface ListSliceState {
 }
 
 const initialState: ListSliceState = {
-    lists: JSON.parse(localStorage.getItem("trelloLists") || "{}")?.lists,
+    lists: JSON.parse(localStorage.getItem("trelloLists") || "{}")?.lists || [],
 };
 
 export const ListsSlice = createSlice({
