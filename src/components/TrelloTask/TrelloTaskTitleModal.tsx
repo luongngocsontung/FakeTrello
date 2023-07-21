@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { styled } from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -13,6 +13,8 @@ import {
 } from "../../features/Tasks/taskSlice";
 import { DeleteOutlined } from "@ant-design/icons";
 import TextArea from "../common/TextArea";
+
+let scrollId: any = null;
 
 function TrelloTaskTitleModal() {
     const quickCardRef = useRef<HTMLDivElement>(null);
@@ -65,6 +67,34 @@ function TrelloTaskTitleModal() {
                 quickCard.style.top = top;
                 quickCard.style.bottom = "";
             }
+
+            // Scroll to show all options if they are hidden
+            if (
+                parseFloat(left) + parseFloat(width) + 276 >
+                window.innerWidth
+            ) {
+                let gap =
+                    parseFloat(left) +
+                    parseFloat(width) +
+                    276 -
+                    window.innerWidth;
+                const listsContainer =
+                    document.getElementById("lists-container");
+
+                const scroll = () => {
+                    listsContainer?.scrollBy({ left: 10 });
+                    quickCard.style.left =
+                        parseFloat(quickCard.style.left) - 10 + "px";
+                    gap -= 10;
+                    if (gap <= 0) {
+                        return;
+                    }
+                    clearTimeout(scrollId);
+                    scrollId = setTimeout(scroll, 1);
+                };
+                scroll();
+            }
+
             // Update attribute for textarea and select all the text
             const textarea = titleRef.current;
             if (!textarea) return;
@@ -73,17 +103,12 @@ function TrelloTaskTitleModal() {
             textarea.style.height = "auto";
             textarea.style.height = textarea.scrollHeight + "px";
             textarea.select();
+
+            return () => {
+                clearTimeout(scrollId);
+            };
         }
     }, [isOpen]);
-
-    // Update textarea value
-    // useEffect(() => {
-    //     const textarea = titleRef.current;
-    //     if (!textarea) return;
-
-    //     textarea.value = taskTitle;
-    //     textarea.style.height = "auto";
-    // }, [taskTitle]);
 
     return (
         <StyledTrelloTaskTitleModal
