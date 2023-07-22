@@ -39,7 +39,7 @@ function TrelloTask({ taskId, listId }: TrelloTaskProps) {
     ) => {
         const target = e.target as HTMLElement;
         // If user click open task title quick card then do nothing
-        if (["BUTTON", "svg"].includes(target.tagName)) return;
+        if (target.closest("button#edit-task")) return;
         dispatch(setTaskModalId(taskId));
     };
 

@@ -235,7 +235,7 @@ const StyledTrellTaskModal = styled.div`
 
         #close-modal-button {
             position: absolute;
-            top: 0;
+            top: 10px;
             right: 0;
             font-size: 20px;
             padding: 8px;
