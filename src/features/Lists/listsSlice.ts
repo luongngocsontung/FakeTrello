@@ -18,7 +18,11 @@ export interface ListSliceState {
 
 const initialState: ListSliceState = {
     lists: JSON.parse(localStorage.getItem("trelloLists") || "{}")?.lists || [
-        { id: "initial-list-id", title: "To Do", tasksId: ["initial-task-id"] },
+        {
+            id: "initial-list-id",
+            title: "To Do",
+            tasksId: ["initial-task-id", "lkebhk3zamowllypud"],
+        },
     ],
 };
 

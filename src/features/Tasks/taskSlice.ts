@@ -22,6 +22,12 @@ const initialState: TaskSliceState = {
             description:
                 "Hello,\nI created this app to show to you since your product is a page builder which need to implement drag and drop algorithm too. \nThank you for reading this ^^",
         },
+        {
+            listId: "initial-list-id",
+            id: "lkebhk3zamowllypud",
+            title: "Click this icon   ----------------->         To change task's title",
+            description: "",
+        },
     ],
 };
 
