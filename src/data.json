@@ -23,9 +23,7 @@
       {
         "id": "TueJul11202323:34:20GMT+0700(IndochinaTime)",
         "title": "To Do",
-        "tasksId": [
-          "lkc47yhl97i0k2gj1r"
-        ]
+        "tasksId": []
       },
       {
         "id": "TueJul11202323:35:02GMT+0700(IndochinaTime)",
@@ -43,6 +41,10 @@
         "id": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
         "title": "Done",
         "tasksId": [
+          "lkeau7koxu60cr4lg3",
+          "lkc47yhl97i0k2gj1r",
+          "lkeauqxzjxftba4nzm",
+          "lkeaietw1ntzx3q2as",
           "lkeah9e0uxmdt7d24b",
           "lkeagpyjxb7n8el5yi",
           "lk5pdr7o57cfua803c",
@@ -288,7 +290,8 @@
       {
         "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
         "id": "lkc04qo73vv9uwuwmn",
-        "title": "Fix empty localStorage make app crashed"
+        "title": "Fix empty localStorage make app crashed",
+        "description": "sad\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
       },
       {
         "listId": "lk954qwsblaouq91ww",
@@ -301,7 +304,7 @@
         "title": "Helol"
       },
       {
-        "listId": "TueJul11202323:34:20GMT+0700(IndochinaTime)",
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
         "id": "lkc47yhl97i0k2gj1r",
         "title": "Add shadow for Dragging Element",
         "description": "While Dragging Element, the draggingEl should have shadow for a better visual"
@@ -316,6 +319,24 @@
         "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
         "id": "lkeah9e0uxmdt7d24b",
         "title": "Add initial state data for list, task",
+        "description": ""
+      },
+      {
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
+        "id": "lkeaietw1ntzx3q2as",
+        "title": "Fix overflow y for Task Modal",
+        "description": ""
+      },
+      {
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
+        "id": "lkeau7koxu60cr4lg3",
+        "title": "Add more example for inital state",
+        "description": ""
+      },
+      {
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
+        "id": "lkeauqxzjxftba4nzm",
+        "title": "Fix click edit task's title make task modal open",
         "description": ""
       }
     ]
