@@ -166,6 +166,7 @@ const StyledTrellTaskModal = styled.div`
         box-sizing: border-box;
         border-radius: 8px;
         min-height: 600px;
+        max-height: 600px;
         width: 768px;
         overflow-x: none;
         overflow-y: scroll;

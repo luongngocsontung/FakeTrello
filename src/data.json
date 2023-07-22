@@ -43,6 +43,8 @@
         "id": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
         "title": "Done",
         "tasksId": [
+          "lkeah9e0uxmdt7d24b",
+          "lkeagpyjxb7n8el5yi",
           "lk5pdr7o57cfua803c",
           "lk6sosww1fwixqykmm",
           "lk9s0mvte1v9ycokjy",
@@ -303,6 +305,18 @@
         "id": "lkc47yhl97i0k2gj1r",
         "title": "Add shadow for Dragging Element",
         "description": "While Dragging Element, the draggingEl should have shadow for a better visual"
+      },
+      {
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
+        "id": "lkeagpyjxb7n8el5yi",
+        "title": "Cannot scroll up/down when mouse position at page view left edge",
+        "description": ""
+      },
+      {
+        "listId": "TueJul11202323:35:13GMT+0700(IndochinaTime)",
+        "id": "lkeah9e0uxmdt7d24b",
+        "title": "Add initial state data for list, task",
+        "description": ""
       }
     ]
   }

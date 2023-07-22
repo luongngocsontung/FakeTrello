@@ -14,7 +14,15 @@ export interface TaskSliceState {
 }
 
 const initialState: TaskSliceState = {
-    tasks: JSON.parse(localStorage.getItem("trelloTasks") || "{}")?.tasks || [],
+    tasks: JSON.parse(localStorage.getItem("trelloTasks") || "{}")?.tasks || [
+        {
+            listId: "initial-list-id",
+            id: "initial-task-id",
+            title: "This is an example task (Click me)",
+            description:
+                "Hello,\nI created this app to show to you since your product is a page builder which need to implement drag and drop algorithm too. \nThank you for reading this ^^",
+        },
+    ],
 };
 
 export const TasksSlice = createSlice({

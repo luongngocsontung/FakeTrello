@@ -8,7 +8,9 @@ export interface TrelloState {
 }
 
 const initialState: TrelloState = {
-    listsId: JSON.parse(localStorage.getItem("trello") || "{}")?.listsId || [],
+    listsId: JSON.parse(localStorage.getItem("trello") || "{}")?.listsId || [
+        "initial-list-id",
+    ],
 };
 
 const handleAddListId = (state: TrelloState, listId: string) => {
