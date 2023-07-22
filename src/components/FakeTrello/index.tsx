@@ -32,7 +32,7 @@ function FakeTrello() {
             <div id="title">
                 <span>Fake Trello</span>
                 <Button href="#" onClick={getDataHref} download={"data.json"}>
-                    Download JSON files
+                    Download JSON file
                 </Button>
                 <SaveTrelloButton />
             </div>
