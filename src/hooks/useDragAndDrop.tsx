@@ -42,13 +42,13 @@ const scrollAtEdge = (pageX: number, pageY: number) => {
         const edgeLeft = 200;
         const edgeRight = window.innerWidth - 200;
         if (mouseX < edgeLeft || mouseX > edgeRight) {
-            if (scrollEdgeX) return true;
+            if (scrollEdgeX) return;
             scrollEdgeX = setInterval(() => {
-                if (!listsContainer) return false;
+                if (!listsContainer) return;
                 let gap = 0;
                 if (mouseX < edgeLeft) {
                     // If element has been scrolled to the edge then do nothing
-                    if (listsContainer.scrollLeft <= 0) return false;
+                    if (listsContainer.scrollLeft <= 0) return;
                     // Caculate scrollBy
                     const intensity = (edgeLeft - mouseX) / 2000;
                     gap = -maxStep * intensity;
@@ -58,19 +58,18 @@ const scrollAtEdge = (pageX: number, pageY: number) => {
                         listsContainer.scrollLeft >=
                         listsContainer.scrollWidth - listsContainer.offsetWidth
                     )
-                        return false;
+                        return;
                     // Caculate scrollBy
                     const intensity = (mouseX - edgeRight) / 2000;
                     gap = maxStep * intensity;
                 }
                 listsContainer.scrollBy(gap, 0);
-                return true;
+                return;
             }, 0);
         } else {
-            if (!scrollEdgeX) return false;
+            if (!scrollEdgeX) return;
             clearInterval(scrollEdgeX);
             scrollEdgeX = null;
-            return false;
         }
     };
 
@@ -82,21 +81,22 @@ const scrollAtEdge = (pageX: number, pageY: number) => {
         if (pageY < edgeTop || pageY > edgeBottom) {
             if (scrollEdgeY) return true;
             scrollEdgeY = setInterval(() => {
-                if (!tasksContainer) return false;
+                if (!tasksContainer) return;
                 let gap = 0;
                 if (mouseY < edgeTop) {
                     // If element has been scrolled to the edge then do nothing
-                    if (tasksContainer.scrollTop <= 0) return false;
+                    if (tasksContainer.scrollTop <= 0) return;
                     // Caculate scrollBy
                     const intensity = (edgeTop - mouseY) / 2000;
                     gap = -maxStep * intensity;
                 } else if (mouseY > edgeBottom) {
                     // If element has been scrolled to the edge then do nothing
+                    // I have to add 1 to the left side because it cannot greater than right side (Example: leftside: 12.543, rightside: 13)
                     if (
-                        tasksContainer.scrollTop >=
+                        tasksContainer.scrollTop + 1 >=
                         tasksContainer.scrollHeight - boundingRect.height
                     )
-                        return false;
+                        return;
                     // Caculate scrollBy
                     const intensity = (mouseY - edgeBottom) / 2000;
                     gap = maxStep * intensity;
@@ -115,8 +115,7 @@ const scrollAtEdge = (pageX: number, pageY: number) => {
     if (draggingElement.id === "list-dnd") {
         autoScrollX();
     } else if (draggingElement.id === "task-dnd") {
-        // prioriy autoScrollX first
-        if (autoScrollX()) return;
+        autoScrollX();
         tasksContainer = placeHolderElement?.closest(".droppable");
         autoScrollY();
     }
@@ -335,18 +334,24 @@ function useDragAndDrop() {
                 })
             );
         }
-        document.removeEventListener("mousemove", handleOnMouseMove);
+
+        cleanUp();
+    };
+
+    const cleanUp = () => {
+        if (!draggingElement) return;
         // Clean up
+        document.removeEventListener("mousemove", handleOnMouseMove);
         document.getElementById("fake-trello")?.classList.remove("no-hover");
         clearInterval(scrollEdgeX);
         clearInterval(scrollEdgeY);
+        cloneDraggingElement?.remove();
+        placeHolderElement?.remove();
         scrollEdgeX = null;
         scrollEdgeY = null;
         draggingElement.hidden = false;
         draggingElement = null;
-        cloneDraggingElement?.remove();
         cloneDraggingElement = null;
-        placeHolderElement?.remove();
         placeHolderElement = null;
         clickedElement = null;
         touchedElement = null;
@@ -355,7 +360,6 @@ function useDragAndDrop() {
         mouseClientY = 0;
         dropPoistion = "";
     };
-
     // Handle On Mouse Down
     useEffect(() => {
         document.addEventListener("mousedown", handleOnMouseDown);
