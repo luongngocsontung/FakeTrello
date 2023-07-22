@@ -168,7 +168,7 @@ const StyledTrellTaskModal = styled.div`
         min-height: 600px;
         max-height: 600px;
         width: 768px;
-        overflow-x: none;
+        overflow-x: hidden;
         overflow-y: scroll;
         padding: 20px;
         position: relative;
@@ -244,6 +244,27 @@ const StyledTrellTaskModal = styled.div`
             &:hover {
                 background-color: #40474db2;
             }
+        }
+
+        /* Style for scroll bar */
+        &::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+
+        &::-webkit-scrollbar-button {
+            display: block;
+            height: 100%;
+        }
+
+        &::-webkit-scrollbar-track-piece {
+            background-color: #282e33;
+            border-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #1c2015;
+            border-radius: 10px;
         }
     }
 `;
