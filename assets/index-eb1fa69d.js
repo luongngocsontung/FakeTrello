@@ -653,7 +653,7 @@ html body {
             border-radius: 10px;
         }
     }
-`;function I3(){a3();const e=t=>{const n=["trello","trelloLists","trelloTasks"],r={};n.forEach(l=>{r[l]=JSON.parse(localStorage.getItem(l)||"{}")});const o=JSON.stringify(r,null,2),i=new Blob([o],{type:"application/json"}),a=URL.createObjectURL(i);t.currentTarget.setAttribute("href",a)};return B.jsxs(T3,{id:"fake-trello",children:[B.jsxs("div",{id:"title",children:[B.jsx("span",{children:"Fake Trello"}),B.jsx(Rn,{href:"#",onClick:e,download:"data.json",children:"Download JSON files"}),B.jsx(o3,{})]}),B.jsx(E3,{}),B.jsx($3,{}),B.jsx(k3,{})]})}const T3=Zt.div`
+`;function I3(){a3();const e=t=>{const n=["trello","trelloLists","trelloTasks"],r={};n.forEach(l=>{r[l]=JSON.parse(localStorage.getItem(l)||"{}")});const o=JSON.stringify(r,null,2),i=new Blob([o],{type:"application/json"}),a=URL.createObjectURL(i);t.currentTarget.setAttribute("href",a)};return B.jsxs(T3,{id:"fake-trello",children:[B.jsxs("div",{id:"title",children:[B.jsx("span",{children:"Fake Trello"}),B.jsx(Rn,{href:"#",onClick:e,download:"data.json",children:"Download JSON file"}),B.jsx(o3,{})]}),B.jsx(E3,{}),B.jsx($3,{}),B.jsx(k3,{})]})}const T3=Zt.div`
     height: 100vh;
     background-color: #8f3f66;
     display: flex;
@@ -727,4 +727,4 @@ html body {
     width: 272px;
     box-sizing: border-box;
 `;function R3(){return B.jsx("div",{className:"App",children:B.jsx(I3,{})})}ff.createRoot(document.getElementById("root")).render(B.jsx(ee.StrictMode,{children:B.jsx(T$,{store:Ub,children:B.jsx(R3,{})})}));
-//# sourceMappingURL=index-fedb3155.js.map
+//# sourceMappingURL=index-eb1fa69d.js.map
