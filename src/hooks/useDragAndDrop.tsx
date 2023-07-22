@@ -178,6 +178,7 @@ function useDragAndDrop() {
                     draggingElement.offsetHeight + "px";
                 cloneDraggingElement.style.rotate = "4deg";
                 cloneDraggingElement.style.pointerEvents = "none";
+                cloneDraggingElement.classList.add("box-shadow");
                 document
                     .getElementById("fake-trello")
                     ?.classList.add("no-hover");

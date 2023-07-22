@@ -75,6 +75,10 @@ const StyledTrelloTask = styled.div`
         visibility: hidden;
     }
 
+    &.box-shadow #trello-task {
+        box-shadow: 0px 8px 12px #0304045c, 0px 0px 1px #03040480;
+    }
+
     #trello-task {
         padding: 1px 0;
         border-radius: 8px;

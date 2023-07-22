@@ -36,6 +36,11 @@ const StyledTrelloList = styled.div`
         opacity: 0;
     }
 
+    &.box-shadow #trello-list {
+        box-shadow: inset 0px 0px 0px 1px #bcd6f01f, 0px 8px 12px #0304045c,
+            0px 0px 1px #03040480;
+    }
+
     #trello-list {
         display: flex;
         flex-direction: column;
