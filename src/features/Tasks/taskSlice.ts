@@ -20,7 +20,7 @@ const initialState: TaskSliceState = {
             id: "initial-task-id",
             title: "This is an example task (Click me)",
             description:
-                "Hello,\nI created this app to show to you since your product is a page builder which need to implement drag and drop algorithm too. \nThank you for reading this ^^",
+                "Hello,\n I only use pure Javascript (mouseDown, mouseMove, mouseUp) for the Drag And Drop Algorithm",
         },
         {
             listId: "initial-list-id",
